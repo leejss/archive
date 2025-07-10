@@ -1,0 +1,88 @@
+---
+import Root from "@/layout/root.astro";
+import { formatPublishedAt } from "@/utils/common";
+import { getCollection } from "astro:content";
+
+const notes = await getCollection("note");
+---
+
+<Root title="">
+  <main class="container">
+    <ul class="post-list">
+      {
+        notes.map((post) => {
+          return (
+            <li class="post-item">
+              <a href={`/notes/${post.id}`} class="post-link">
+                <h2 class="post-title">{post.data.title}</h2>
+                {post.data.publishedAt && (
+                  <time
+                    datetime={post.data.publishedAt.toISOString()}
+                    class="post-date"
+                  >
+                    {formatPublishedAt(post.data.publishedAt)}
+                  </time>
+                )}
+              </a>
+            </li>
+          );
+        })
+      }
+    </ul>
+  </main>
+</Root>
+
+<style>
+  .container {
+    width: min(100% - 2rem, 70ch);
+    margin-inline: auto;
+    padding: 2rem 0;
+  }
+
+  .title {
+    font-size: 3rem;
+    font-weight: bold;
+    margin-bottom: 2rem;
+    color: var(--default-text-color);
+  }
+
+  .post-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .post-item {
+    border: 1px solid var(--default-border-color);
+    border-radius: 0.5rem;
+    transition: transform 0.2s ease;
+  }
+
+  .post-item:hover {
+    transform: translateY(-2px);
+  }
+
+  .post-link {
+    display: block;
+    padding: 1.5rem;
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .post-title {
+    font-size: 1.5rem;
+    margin: 0;
+    color: var(--default-text-color);
+  }
+
+  .post-date {
+    display: block;
+    margin-top: 0.5rem;
+    font-size: 0.9rem;
+    color: var(--default-text-color);
+    opacity: 0.8;
+  }
+</style>

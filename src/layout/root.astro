@@ -1,0 +1,162 @@
+---
+import { SITE } from "@/config";
+import "../styles/globals.css";
+import ThemeSetting from "@/components/theme-setting.astro";
+
+interface Props {
+  title?: string;
+}
+
+const { title } = Astro.props;
+const getTitle = () => {
+  if (title) {
+    return `${SITE.title} | ${title}`;
+  }
+  return SITE.title;
+};
+---
+
+<html lang={SITE.defaultLanguage}>
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="generator" content={Astro.generator} />
+    <meta name="description" content={SITE.description} />
+    <meta name="author" content={SITE.author} />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={SITE.baseURL} />
+    <meta property="og:title" content={getTitle()} />
+    <meta property="og:description" content={SITE.description} />
+    <meta property="og:image" content={`${SITE.baseURL}/og-image.png`} />
+    <meta property="og:locale" content={SITE.defaultLanguage} />
+    <meta property="og:site_name" content={SITE.title} />
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:url" content={SITE.baseURL} />
+    <meta name="twitter:title" content={getTitle()} />
+    <meta name="twitter:description" content={SITE.description} />
+    <meta name="twitter:image" content={`${SITE.baseURL}/og-image.png`} />
+    <link
+      rel="preload"
+      href="/fonts/AtkinsonHyperlegible-Regular.ttf"
+      as="font"
+      type="font/ttf"
+      crossorigin
+    />
+    <link
+      rel="preload"
+      href="/fonts/AtkinsonHyperlegible-Bold.ttf"
+      as="font"
+      type="font/ttf"
+      crossorigin
+    />
+    <title>{getTitle()}</title>
+    <script is:inline>
+      (function () {
+        function getInitialTheme() {
+          const savedTheme = localStorage.getItem("blog-theme");
+          if (savedTheme) {
+            return savedTheme;
+          }
+          const prefersDark = window.matchMedia(
+            "(prefers-color-scheme: dark)",
+          ).matches;
+          return prefersDark ? "dark" : "light";
+        }
+
+        const theme = getInitialTheme();
+        document.documentElement.setAttribute("data-theme", theme);
+        window
+          .matchMedia("(prefers-color-scheme: dark)")
+          .addEventListener("change", (e) => {
+            if (localStorage.getItem("blog-theme") === null) {
+              localStorage.setItem("blog-theme", e.matches ? "dark" : "light");
+            }
+          });
+      })();
+    </script>
+  </head>
+  <body>
+    <nav class="floating">
+      <!-- <div class="nav-container">
+        <div class="nav-links">
+          <a href="/" class="nav-link">HOME</a>
+          <a href="/blog" class="nav-link">BLOG</a>
+        </div>
+      </div> -->
+      <div class="theme-setting-wrapper">
+        <ThemeSetting />
+      </div>
+    </nav>
+    <div class="slot-container">
+      <slot />
+    </div>
+  </body>
+</html>
+
+<style>
+  .floating {
+    position: fixed;
+    top: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 100;
+    width: min(100% - 2rem, 1200px);
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+  }
+
+  .theme-setting-wrapper {
+    margin-left: auto;
+  }
+
+  .nav-container {
+    background: var(--default-bg-color);
+    padding: 0.5rem;
+    border-radius: 3rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 0.25rem;
+  }
+
+  .nav-link {
+    display: inline-block;
+    color: var(--default-text-color);
+    text-decoration: none;
+    padding: 0.5rem 1.25rem;
+    font-weight: 500;
+    font-size: 0.875rem;
+    letter-spacing: 1px;
+    border-radius: 2rem;
+    transition: all 0.2s ease;
+  }
+
+  .nav-link:hover {
+    background: var(--default-text-color);
+    color: var(--default-bg-color);
+  }
+
+  .slot-container {
+    padding-top: 6rem;
+  }
+
+  @media (max-width: 768px) {
+    .floating {
+      top: auto;
+      bottom: 2rem;
+    }
+
+    .slot-container {
+      padding-top: 0;
+      padding-bottom: 6rem;
+    }
+  }
+</style>

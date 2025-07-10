@@ -1,0 +1,76 @@
+---
+import Root from "@/layout/root.astro";
+import { getCollection, render } from "astro:content";
+
+export async function getStaticPaths() {
+  const notes = await getCollection("note");
+  const paths = notes.map((post) => ({
+    params: { id: post.id },
+    props: { post },
+  }));
+  return paths;
+}
+const { post } = Astro.props;
+const { Content } = await render(post);
+const { title, publishedAt } = post.data;
+---
+
+<Root title={title}>
+  <article class="container">
+    <header class="header">
+      <h1 class="title">{title}</h1>
+      <div class="meta">
+        {
+          publishedAt && (
+            <span>
+              <time datetime={publishedAt.toISOString()}>
+                {publishedAt.toLocaleDateString("ko-KR", {
+                  year: "numeric",
+                  month: "long",
+                  day: "numeric",
+                })}
+              </time>
+            </span>
+          )
+        }
+      </div>
+    </header>
+    <div class="markdown-content">
+      <Content />
+    </div>
+  </article>
+</Root>
+
+<style>
+  .container {
+    width: min(100% - 2rem, 70ch);
+    margin-inline: auto;
+    padding: 2rem 0;
+  }
+
+  .header {
+    display: grid;
+    place-items: center;
+    margin-bottom: 3rem;
+  }
+
+  .header .title {
+    font-size: 4rem;
+    font-weight: bold;
+    color: var(--default-text-color);
+  }
+
+  .meta {
+    display: flex;
+    gap: 1rem;
+    margin: 1rem 0 0;
+    font-size: 0.9rem;
+    color: var(--default-text-color);
+    opacity: 0.8;
+  }
+
+  /* 마크다운 콘텐츠 컨테이너 추가 스타일 */
+  .markdown-content {
+    margin-top: 1rem;
+  }
+</style>
