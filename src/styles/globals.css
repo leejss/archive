@@ -48,3 +48,9 @@ h5,
 h6 {
   margin: 0;
 }
+
+.container {
+  width: min(100% - 2rem, 100ch);
+  margin-inline: auto;
+  padding: 2rem 0;
+}

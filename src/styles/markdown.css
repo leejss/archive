@@ -1,9 +1,8 @@
-/* 마크다운 콘텐츠 스타일 */
 .markdown-content {
   /* 기본 텍스트 스타일 */
   color: var(--default-text-color);
   line-height: 1.7;
-  font-size: 1.1rem;
+  font-size: clamp(1rem, 2.5vw, 1.1rem);
   word-break: break-word;
   overflow-wrap: break-word;
 }
@@ -23,31 +22,29 @@
 }
 
 .markdown-content h1 {
-  font-size: 2.5rem;
-  border-bottom: 2px solid var(--default-border-color);
+  font-size: clamp(2rem, 6vw, 2.5rem);
   padding-bottom: 0.5rem;
 }
 
 .markdown-content h2 {
-  font-size: 2rem;
-  border-bottom: 1px solid var(--default-border-color);
+  font-size: clamp(1.75rem, 5vw, 2rem);
   padding-bottom: 0.3rem;
 }
 
 .markdown-content h3 {
-  font-size: 1.75rem;
+  font-size: clamp(1.5rem, 4vw, 1.75rem);
 }
 
 .markdown-content h4 {
-  font-size: 1.5rem;
+  font-size: clamp(1.25rem, 3.5vw, 1.5rem);
 }
 
 .markdown-content h5 {
-  font-size: 1.25rem;
+  font-size: clamp(1.125rem, 3vw, 1.25rem);
 }
 
 .markdown-content h6 {
-  font-size: 1.1rem;
+  font-size: clamp(1rem, 2.5vw, 1.1rem);
 }
 
 /* 단락 스타일 */
@@ -83,7 +80,11 @@
   margin: 1.5rem 0;
   padding: 0.5rem 1.5rem;
   border-left: 4px solid var(--default-border-color);
-  background-color: color-mix(in srgb, var(--default-border-color) 10%, transparent);
+  background-color: color-mix(
+    in srgb,
+    var(--default-border-color) 10%,
+    transparent
+  );
   font-style: italic;
 }
 
@@ -122,8 +123,12 @@
 /* 코드 스타일 */
 .markdown-content code {
   font-family: "AtkinsonHyperlegibleMono", monospace;
-  font-size: 0.9em;
-  background-color: color-mix(in srgb, var(--default-border-color) 30%, transparent);
+  font-size: clamp(0.8em, 2vw, 0.9em);
+  background-color: color-mix(
+    in srgb,
+    var(--default-border-color) 30%,
+    transparent
+  );
   padding: 0.2em 0.4em;
   border-radius: 3px;
 }
@@ -131,7 +136,11 @@
 .markdown-content pre {
   margin: 1.5rem 0;
   padding: 1rem;
-  background-color: color-mix(in srgb, var(--default-border-color) 30%, transparent);
+  background-color: color-mix(
+    in srgb,
+    var(--default-border-color) 30%,
+    transparent
+  );
   border-radius: 5px;
   overflow-x: auto;
 }
@@ -139,7 +148,7 @@
 .markdown-content pre code {
   background-color: transparent;
   padding: 0;
-  font-size: 0.9rem;
+  font-size: clamp(0.8rem, 2vw, 0.9rem);
   line-height: 1.5;
   display: block;
 }
@@ -166,13 +175,21 @@
 }
 
 .markdown-content th {
-  background-color: color-mix(in srgb, var(--default-border-color) 20%, transparent);
+  background-color: color-mix(
+    in srgb,
+    var(--default-border-color) 20%,
+    transparent
+  );
   font-weight: 700;
   text-align: left;
 }
 
 .markdown-content tr:nth-child(even) {
-  background-color: color-mix(in srgb, var(--default-border-color) 5%, transparent);
+  background-color: color-mix(
+    in srgb,
+    var(--default-border-color) 5%,
+    transparent
+  );
 }
 
 /* 이미지 스타일 */
