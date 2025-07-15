@@ -3,7 +3,11 @@ import Root from "@/layout/root.astro";
 import { formatPublishedAt } from "@/utils/common";
 import { getCollection } from "astro:content";
 
-const notes = await getCollection("note");
+const notes = (await getCollection("note")).sort(
+  (a, b) =>
+    new Date(b.data.publishedAt).getTime() -
+    new Date(a.data.publishedAt).getTime(),
+);
 ---
 
 <Root title="">
@@ -52,11 +56,11 @@ const notes = await getCollection("note");
   .post-item {
     border: 1px solid var(--default-border-color);
     border-radius: 0.5rem;
-    transition: transform 0.2s ease;
+    transition: border-color 0.2s ease;
   }
 
   .post-item:hover {
-    transform: translateY(-2px);
+    border-color: var(--default-border-hover-color);
   }
 
   .post-link {

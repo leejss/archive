@@ -1,13 +1,15 @@
 :root {
   --default-text-color: oklch(15% 0 0);
   --default-bg-color: oklch(100% 0 0);
-  --default-border-color: oklch(90% 0.01 270);
+  --default-border-color: oklch(95% 0.01 270);
+  --default-border-hover-color: oklch(85% 0.01 270);
   --default-shadow-color: oklch(85% 0.01 270);
 }
 
 [data-theme="dark"] {
   --default-text-color: oklch(98% 0 0);
   --default-bg-color: oklch(20% 0.03 270);
-  --default-border-color: oklch(35% 0.01 270);
+  --default-border-color: oklch(45% 0.01 270);
+  --default-border-hover-color: oklch(55% 0.01 270);
   --default-shadow-color: oklch(25% 0.01 270);
 }
