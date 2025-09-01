@@ -1,5 +1,5 @@
 ---
-title: Parseargs
+title: parseArgs
 publishedAt: 2025-09-01
 tags: []
 ---
