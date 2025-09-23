@@ -65,13 +65,9 @@ function createPostTemplate(title, tags, publishedAt) {
 
   return `---
 title: ${title}
-draft: true
 publishedAt: ${publishedAt}
 ${tagsSection}
 ---
-
-# ${title}
-
 Write your content here...
 `;
 }
