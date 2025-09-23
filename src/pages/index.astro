@@ -54,26 +54,49 @@ const notes = (await getCollection("note")).sort(
   }
 
   .post-item {
-    border: 1px solid var(--default-border-color);
-    border-radius: 0.5rem;
+    border-bottom: 1px solid transparent;
     transition: border-color 0.2s ease;
   }
 
-  .post-item:hover {
+  /* .post-item:hover {
     border-color: var(--default-border-hover-color);
-  }
+  } */
 
   .post-link {
     display: block;
     padding: 1.5rem;
     text-decoration: none;
     color: inherit;
+    border-radius: 0.5rem;
+    transition: transform 0.08s ease;
+  }
+
+  .post-link:hover {
+    /* transform: translateY(-1px); */
   }
 
   .post-title {
     font-size: 1.5rem;
     margin: 0;
     color: var(--default-text-color);
+    display: inline;
+    /* underline reveal */
+    background-image: linear-gradient(currentColor, currentColor);
+    background-repeat: no-repeat;
+    background-position: 0 100%;
+    background-size: 0% 2px;
+    transition: color 0.2s ease, background-size 0.2s ease;
+  }
+
+  .post-link:hover .post-title,
+  .post-link:focus-visible .post-title {
+    background-size: 100% 2px;
+  }
+
+  .post-link:focus-visible {
+    outline: 2px solid var(--default-border-hover-color);
+    outline-offset: 2px;
+    border-radius: 0.5rem;
   }
 
   .post-date {
