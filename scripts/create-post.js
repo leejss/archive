@@ -1,6 +1,4 @@
-#!/usr/bin/env node
-
-import { writeFileSync, existsSync } from "fs";
+import { writeFileSync, existsSync, readFileSync } from "fs";
 import { join, dirname } from "path";
 import { fileURLToPath } from "url";
 
@@ -81,13 +79,6 @@ function createPost() {
   // 파일명에 .md 확장자가 없으면 추가
   const fullFilename = filename.endsWith(".md") ? filename : `${filename}.md`;
 
-  // 제목 생성 (확장자 제거 후 변환)
-  const baseFilename = filename.replace(/\.md$/, "");
-  const title = kebabToTitleCase(baseFilename);
-
-  // 현재 날짜
-  const publishedAt = getCurrentDate();
-
   // 파일 경로
   const notesDir = join(__dirname, "..", "src", "content", "notes");
   const filePath = join(notesDir, fullFilename);
@@ -98,8 +89,24 @@ function createPost() {
     process.exit(1);
   }
 
-  // 템플릿 생성
-  const content = createPostTemplate(title, tags, publishedAt);
+  // 템플릿 파일 읽기 및 처리
+  const templateFilePath = join(__dirname, "template.md");
+  let content = readFileSync(templateFilePath, "utf8");
+
+  // $publishedAt을 현재 날짜로 치환
+  const publishedAt = getCurrentDate();
+  content = content.replace("$publishedAt", publishedAt);
+
+  // 제목 생성 (확장자 제거 후 변환)
+  const baseFilename = filename.replace(/\.md$/, "");
+  const title = kebabToTitleCase(baseFilename);
+  content = content.replace("Post title", title);
+
+  // tags 처리
+  if (tags.length > 0) {
+    const tagsYaml = tags.map((tag) => `  - ${tag}`).join("\n");
+    content = content.replace("tags: []", `tags:\n${tagsYaml}`);
+  }
 
   try {
     // 파일 생성
