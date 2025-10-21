@@ -1,6 +1,7 @@
 // @ts-check
 import { SITE } from "./src/config";
 import { defineConfig } from "astro/config";
+import mermaid from "astro-mermaid";
 
 // https://astro.build/config
 export default defineConfig({
@@ -19,4 +20,11 @@ export default defineConfig({
       wrap: true,
     },
   },
+
+  integrations: [
+    mermaid({
+      theme: "forest",
+      autoTheme: true,
+    }),
+  ],
 });
