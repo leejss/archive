@@ -10,7 +10,7 @@
     "post:new": "node scripts/create-post.js"
   },
   "dependencies": {
-    "astro": "^5.7.5",
+    "astro": "^5.15.3",
     "astro-mermaid": "^1.1.0",
     "mermaid": "^11.12.0"
   },
