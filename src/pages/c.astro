@@ -3,21 +3,25 @@ import Root from "@/layout/root.astro";
 import { formatPublishedAt } from "@/utils/common";
 import { getCollection } from "astro:content";
 
-const notes = (await getCollection("note")).sort(
-  (a, b) =>
-    new Date(b.data.publishedAt).getTime() -
-    new Date(a.data.publishedAt).getTime(),
-);
+const c = (await getCollection("c"))
+  .sort(
+    (a, b) =>
+      new Date(b.data.publishedAt).getTime() -
+      new Date(a.data.publishedAt).getTime()
+  );
 ---
 
-<Root title="">
+<Root title="Learning C">
   <main class="container">
+    <div class="intro">
+      <h1 class="page-title">C Programming</h1>
+    </div>
     <ul class="post-list">
       {
-        notes.map((post) => {
-          return (
+        c.length > 0 ? (
+        c.map((post) => (
             <li class="post-item">
-              <a href={`/notes/${post.id}`} class="post-link">
+              <a href={`/c/${post.id}`} class="post-link">
                 <h2 class="post-title">{post.data.title}</h2>
                 {post.data.publishedAt && (
                   <time
@@ -29,19 +33,41 @@ const notes = (await getCollection("note")).sort(
                 )}
               </a>
             </li>
-          );
-        })
+          ))
+        ) : (
+          <li class="empty-message">아직 작성된 기록이 없습니다.</li>
+        )
       }
     </ul>
   </main>
 </Root>
 
 <style>
-  .title {
+  .intro {
+    padding: 1rem 0.5rem;
+  }
+
+  .page-title {
     font-size: 3rem;
-    font-weight: bold;
-    margin-bottom: 2rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
     color: var(--default-text-color);
+  }
+
+  .page-desc {
+    font-size: 1.1rem;
+    line-height: 1.6;
+    color: var(--default-text-color);
+    opacity: 0.8;
+    max-width: 60ch;
+  }
+
+  .divider {
+    height: 1px;
+    background: var(--default-text-color);
+    opacity: 0.1;
+    margin-bottom: 3rem;
+    width: 100%;
   }
 
   .post-list {
@@ -58,39 +84,34 @@ const notes = (await getCollection("note")).sort(
     transition: border-color 0.2s ease;
   }
 
-
   .post-link {
     display: block;
-    padding: 1.5rem;
+    padding: 1.5rem 0rem;
     text-decoration: none;
     color: inherit;
     border-radius: 0.5rem;
-    transition: transform 0.08s ease;
+    transition: transform 0.08s ease, background-color 0.2s ease;
   }
 
+  .post-link:hover {
+    background-color: rgba(var(--default-text-color-rgb), 0.03);
+  }
 
   .post-title {
     font-size: 1.5rem;
     margin: 0;
     color: var(--default-text-color);
     display: inline;
-    /* underline reveal */
+    /* Hover underline animation */
     background-image: linear-gradient(currentColor, currentColor);
     background-repeat: no-repeat;
     background-position: 0 100%;
     background-size: 0% 2px;
-    transition: color 0.2s ease, background-size 0.2s ease;
+    transition: background-size 0.2s ease;
   }
 
-  .post-link:hover .post-title,
-  .post-link:focus-visible .post-title {
+  .post-link:hover .post-title {
     background-size: 100% 2px;
-  }
-
-  .post-link:focus-visible {
-    outline: 2px solid var(--default-border-hover-color);
-    outline-offset: 2px;
-    border-radius: 0.5rem;
   }
 
   .post-date {
@@ -98,6 +119,16 @@ const notes = (await getCollection("note")).sort(
     margin-top: 0.5rem;
     font-size: 0.9rem;
     color: var(--default-text-color);
-    opacity: 0.8;
+    opacity: 0.6;
+    font-family: "AtkinsonHyperlegibleMono", monospace;
+  }
+
+  .empty-message {
+    padding: 3rem 0;
+    text-align: center;
+    color: var(--default-text-color);
+    opacity: 0.6;
+    font-style: italic;
   }
 </style>
+
