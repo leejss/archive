@@ -3,23 +3,22 @@ import Root from "@/layout/root.astro";
 import { formatPublishedAt } from "@/utils/common";
 import { getCollection } from "astro:content";
 
-const c = (await getCollection("c"))
-  .sort(
-    (a, b) =>
-      new Date(b.data.publishedAt).getTime() -
-      new Date(a.data.publishedAt).getTime()
-  );
+const c = (await getCollection("c")).sort(
+  (a, b) =>
+    new Date(b.data.publishedAt).getTime() -
+    new Date(a.data.publishedAt).getTime(),
+);
 ---
 
 <Root title="Learning C">
   <main class="container">
     <div class="intro">
-      <h1 class="page-title">C Programming</h1>
+      <h1 class="page-title">Learning C</h1>
     </div>
     <ul class="post-list">
       {
         c.length > 0 ? (
-        c.map((post) => (
+          c.map((post) => (
             <li class="post-item">
               <a href={`/c/${post.id}`} class="post-link">
                 <h2 class="post-title">{post.data.title}</h2>
@@ -90,7 +89,9 @@ const c = (await getCollection("c"))
     text-decoration: none;
     color: inherit;
     border-radius: 0.5rem;
-    transition: transform 0.08s ease, background-color 0.2s ease;
+    transition:
+      transform 0.08s ease,
+      background-color 0.2s ease;
   }
 
   .post-link:hover {
@@ -131,4 +132,3 @@ const c = (await getCollection("c"))
     font-style: italic;
   }
 </style>
-
