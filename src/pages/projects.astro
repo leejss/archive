@@ -1,0 +1,202 @@
+---
+import Root from "@/layout/root.astro";
+
+const projects = [
+  { name: "Project Alpha", url: "#" },
+  { name: "Beta System", url: "#" },
+  { name: "Gamma Ray", url: "#" },
+  { name: "Delta Force", url: "#" },
+  { name: "Epsilon Edge", url: "#" },
+  { name: "Zeta Zone", url: "#" },
+  { name: "Eta Engine", url: "#" },
+  { name: "Theta Theory", url: "#" },
+  { name: "Iota Interface", url: "#" },
+];
+---
+
+<Root>
+  <main class="container">
+    <div class="scroll-viewport">
+      <ul class="project-list">
+        {
+          projects.map((project) => (
+            <li class="project-item">
+              <a href={project.url} class="project-link">
+                {project.name}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </main>
+</Root>
+
+<style>
+  :root {
+    --item-height: 100px;
+    --gap: 60px;
+
+    @media (min-width: 768px) {
+      --item-height: 120px;
+      --gap: 60px;
+    }
+  }
+
+  .container {
+    height: 100vh;
+    width: 100%;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    background: var(--default-bg-color);
+    color: var(--default-text-color);
+    transition:
+      background-color 0.3s,
+      color 0.3s;
+  }
+
+  .header {
+    padding: 2rem;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 10;
+    width: 100%;
+    text-align: center;
+    pointer-events: none;
+  }
+
+  .page-title {
+    font-size: 1rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    opacity: 0.3;
+    color: var(--default-text-color);
+  }
+
+  .scroll-viewport {
+    flex: 1;
+    overflow-y: scroll;
+    perspective: 1000px;
+    scroll-behavior: smooth;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    position: relative;
+    /* flex 사용 금지: 스크롤 컨테이너에서 flex는 스크롤 영역 계산 버그 유발 */
+  }
+
+  .scroll-viewport::-webkit-scrollbar {
+    display: none;
+  }
+
+  .project-list {
+    list-style: none;
+    padding: 50vh 0;
+    margin: 0 auto; /* 수평 중앙 정렬: flex 대신 margin auto 사용 */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--gap);
+    transform-style: preserve-3d;
+    width: fit-content; /* margin auto가 작동하려면 width 필요 */
+  }
+
+  .project-item {
+    height: var(--item-height);
+    /* Width can be auto or fixed. Flex centering handles it. */
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    /* Default hidden state (will be overridden by JS) */
+    opacity: 0;
+  }
+
+  .project-link {
+    font-size: 3rem; /* Large title */
+    font-weight: 700;
+    text-decoration: none;
+    color: var(--default-text-color);
+    white-space: nowrap;
+    text-align: center;
+    transition: color 0.3s;
+    /* Optional: Stroke effect or fill? Plain text for now. */
+  }
+
+  @media (min-width: 768px) {
+    .project-link {
+      font-size: 7rem;
+    }
+  }
+</style>
+
+<script>
+  import Lenis from "lenis";
+  const viewport = document.querySelector(".scroll-viewport")!;
+  const items = document.querySelectorAll(
+    ".project-item",
+  ) as NodeListOf<HTMLElement>;
+  const projectList = document.querySelector(".project-list")!;
+
+  // Initialize Lenis for smooth scrolling
+  const lenis = new Lenis({
+    wrapper: viewport,
+    content: projectList,
+    duration: 1.2,
+    easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), // smooth easing
+    orientation: "vertical",
+    gestureOrientation: "vertical",
+    smoothWheel: true,
+  });
+
+  function updateScroll(time: number) {
+    lenis.raf(time);
+
+    if (!viewport) return;
+    const viewportRect = viewport.getBoundingClientRect();
+    const containerCenter = viewportRect.top + viewportRect.height / 2;
+
+    // Increased spacing as requested: 120 -> 180
+    // Item height is ~100px text (depends on font size).
+    // Let's give it generous breathing room.
+
+    const itemSpacing = 180;
+    items.forEach((item) => {
+      const rect = item.getBoundingClientRect();
+      const itemCenter = rect.top + rect.height / 2;
+
+      const distance = Math.abs(itemCenter - containerCenter);
+      const normalized = distance / itemSpacing;
+
+      // Transparency
+      // 0 -> 1
+      // 1 -> 0.4
+      // 1.5 -> 0
+      let opacity = 1 - normalized * 0.6;
+      if (normalized >= 1.5) opacity = 0; // tighter cutoff for wider spacing
+      if (opacity < 0) opacity = 0;
+
+      // Scale
+      // 0 -> 1
+      // 1 -> 0.8
+      let scale = 1 - normalized * 0.2;
+      if (scale < 0.5) scale = 0.5;
+
+      // Angle
+      // const angle = Math.min(
+      //   Math.max(((itemCenter - containerCenter) / itemSpacing) * 20, -30),
+      //   30,
+      // );
+
+      item.style.transform = `scale(${scale})`;
+      item.style.opacity = opacity.toString();
+    });
+
+    requestAnimationFrame(updateScroll);
+  }
+
+  // Start loop
+  requestAnimationFrame(updateScroll);
+</script>
