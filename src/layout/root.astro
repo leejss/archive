@@ -5,9 +5,10 @@ import ThemeSetting from "@/components/theme-setting.astro";
 
 interface Props {
   title?: string;
+  useSlotContainer?: boolean;
 }
 
-const { title } = Astro.props;
+const { title, useSlotContainer = true } = Astro.props;
 const getTitle = () => {
   if (title) {
     return `${SITE.title} | ${title}`;
@@ -85,16 +86,23 @@ const getTitle = () => {
       <div class="nav-content">
         <div class="nav-links">
           <a href="/" class="nav-link">Notes</a>
-          <a href="/c" class="nav-link">C</a>
+          <a href="/projects" class="nav-link">Projects</a>
+          <!-- <a href="/c" class="nav-link">C</a> -->
         </div>
         <div class="theme-toggle-container">
           <ThemeSetting />
         </div>
       </div>
     </nav>
-    <div class="slot-container">
-      <slot />
-    </div>
+    {
+      useSlotContainer ? (
+        <div class="slot-container">
+          <slot />
+        </div>
+      ) : (
+        <slot />
+      )
+    }
   </body>
 </html>
 
@@ -154,9 +162,7 @@ const getTitle = () => {
 
   @media (max-width: 768px) {
     .site-navigation {
-      top: auto;
-      bottom: 1.5rem;
-      padding: 0 1rem;
+      padding: 0.5rem 1rem;
     }
 
     .nav-content {
@@ -179,11 +185,6 @@ const getTitle = () => {
     .nav-link {
       font-size: 1rem;
       padding: 0.5rem 0.75rem;
-    }
-
-    .slot-container {
-      padding-top: 2rem;
-      padding-bottom: 8rem;
     }
   }
 </style>
