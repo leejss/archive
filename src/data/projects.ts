@@ -1,23 +1,27 @@
 export interface Project {
   name: string;
-  url: string;
+  webUrl?: string;
+  githubUrl?: string;
   summary: string;
 }
 
 export const projects: Project[] = [
   {
     name: "Chaek",
-    url: "https://chaek.app/",
+    webUrl: "https://chaek.app/",
+    // githubUrl: "",
     summary: "AI Assistant for Book Generation.",
   },
   {
     name: "Repo Cleanser",
-    url: "https://repo-cleanser.vercel.app",
+    webUrl: "https://repo-cleanser.vercel.app",
+    // githubUrl: "",
     summary: "Cleans and optimizes your Github repositories with ease.",
   },
   {
     name: "Brainrack",
-    url: "https://brainrack.app",
+    webUrl: "https://brainrack.app",
+    // githubUrl: "",
     summary: "Dump your ideas quickly and organize them later.",
   },
 ];
