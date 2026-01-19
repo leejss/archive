@@ -1,26 +1,15 @@
 ---
 import Root from "@/layout/root.astro";
-
-const projects = [
-  { name: "Project Alpha", url: "#" },
-  { name: "Beta System", url: "#" },
-  { name: "Gamma Ray", url: "#" },
-  { name: "Delta Force", url: "#" },
-  { name: "Epsilon Edge", url: "#" },
-  { name: "Zeta Zone", url: "#" },
-  { name: "Eta Engine", url: "#" },
-  { name: "Theta Theory", url: "#" },
-  { name: "Iota Interface", url: "#" },
-];
+import { projects } from "../data/projects";
 ---
 
-<Root>
-  <main class="container">
+<Root useSlotContainer={false}>
+  <main class="project-container">
     <div class="scroll-viewport">
       <ul class="project-list">
         {
-          projects.map((project) => (
-            <li class="project-item">
+          projects.map((project, index) => (
+            <li class="project-item" data-index={index}>
               <a href={project.url} class="project-link">
                 {project.name}
               </a>
@@ -29,21 +18,25 @@ const projects = [
         }
       </ul>
     </div>
+    <aside class="project-card" aria-live="polite" aria-atomic="true">
+      <h2 class="project-card__title">{projects[0]?.name ?? ""}</h2>
+      <p class="project-card__summary">{projects[0]?.summary ?? ""}</p>
+    </aside>
   </main>
 </Root>
 
 <style>
   :root {
-    --item-height: 100px;
-    --gap: 60px;
+    --item-height: 9vh;
+    --gap: 2vh;
 
     @media (min-width: 768px) {
-      --item-height: 120px;
-      --gap: 60px;
+      --item-height: 13vh;
+      --gap: 4vh;
     }
   }
 
-  .container {
+  .project-container {
     height: 100vh;
     width: 100%;
     overflow: hidden;
@@ -56,25 +49,6 @@ const projects = [
       color 0.3s;
   }
 
-  .header {
-    padding: 2rem;
-    position: absolute;
-    top: 0;
-    left: 0;
-    z-index: 10;
-    width: 100%;
-    text-align: center;
-    pointer-events: none;
-  }
-
-  .page-title {
-    font-size: 1rem;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    opacity: 0.3;
-    color: var(--default-text-color);
-  }
-
   .scroll-viewport {
     flex: 1;
     overflow-y: scroll;
@@ -83,7 +57,6 @@ const projects = [
     scrollbar-width: none;
     -ms-overflow-style: none;
     position: relative;
-    /* flex 사용 금지: 스크롤 컨테이너에서 flex는 스크롤 영역 계산 버그 유발 */
   }
 
   .scroll-viewport::-webkit-scrollbar {
@@ -92,111 +65,487 @@ const projects = [
 
   .project-list {
     list-style: none;
+    /* Center the list vertically with huge padding */
     padding: 50vh 0;
-    margin: 0 auto; /* 수평 중앙 정렬: flex 대신 margin auto 사용 */
+    margin: 0 auto;
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: var(--gap);
     transform-style: preserve-3d;
-    width: fit-content; /* margin auto가 작동하려면 width 필요 */
+    width: fit-content;
   }
 
   .project-item {
     height: var(--item-height);
-    /* Width can be auto or fixed. Flex centering handles it. */
     width: 100%;
     display: flex;
     justify-content: center;
     align-items: center;
-
-    /* Default hidden state (will be overridden by JS) */
     opacity: 0;
+    will-change: transform, opacity;
   }
 
   .project-link {
-    font-size: 3rem; /* Large title */
+    /* Fluid typography adjusted for slimmer rows */
+    font-size: clamp(2rem, 8vw, 6.5rem);
     font-weight: 700;
     text-decoration: none;
     color: var(--default-text-color);
     white-space: nowrap;
     text-align: center;
     transition: color 0.3s;
-    /* Optional: Stroke effect or fill? Plain text for now. */
+    line-height: 1.1;
   }
 
-  @media (min-width: 768px) {
-    .project-link {
-      font-size: 7rem;
+  .project-item[data-active="true"] .project-link {
+    color: var(--default-text-color);
+    text-shadow: 0 0.5vh 2vh rgba(0, 0, 0, 0.15);
+  }
+
+  .project-card {
+    position: absolute;
+    right: 2rem;
+    bottom: 2rem;
+    /* Responsive card width */
+    width: min(420px, 85vw);
+    padding: clamp(1.25rem, 2vh, 2rem);
+    border-radius: 16px;
+    background: rgba(0, 0, 0, 0.25);
+    backdrop-filter: blur(16px);
+    color: var(--default-text-color);
+    box-shadow: 0 2vh 5vh rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: column;
+    gap: 1.5vh;
+    pointer-events: none;
+    z-index: 10;
+  }
+
+  /* Mobile adjustments for the card */
+  @media (max-width: 768px) {
+    .project-card {
+      right: 50%;
+      transform: translateX(50%);
+      bottom: 1vh;
+      width: 90vw;
     }
+  }
+
+  .project-card__eyebrow {
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    font-size: 0.75rem;
+    opacity: 0.6;
+  }
+
+  .project-card__title {
+    font-size: clamp(1.25rem, 4vw, 1.8rem);
+    margin: 0;
+  }
+
+  .project-card__summary {
+    margin: 0;
+    opacity: 0.8;
+    line-height: 1.5;
+    font-size: clamp(0.9rem, 3vw, 1rem);
+  }
+
+  .project-card__meta {
+    margin: 0;
+    display: grid;
+    gap: 0.5rem;
+  }
+
+  .project-card__meta-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.9rem;
+    opacity: 0.8;
+  }
+
+  .project-card__tags {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .project-card__tags li {
+    font-size: 0.75rem;
+    padding: 0.25rem 0.6rem;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.12);
   }
 </style>
 
 <script>
   import Lenis from "lenis";
-  const viewport = document.querySelector(".scroll-viewport")!;
-  const items = document.querySelectorAll(
-    ".project-item",
-  ) as NodeListOf<HTMLElement>;
-  const projectList = document.querySelector(".project-list")!;
+  import { projects } from "../data/projects";
 
-  // Initialize Lenis for smooth scrolling
-  const lenis = new Lenis({
-    wrapper: viewport,
-    content: projectList,
-    duration: 1.2,
-    easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), // smooth easing
-    orientation: "vertical",
-    gestureOrientation: "vertical",
-    smoothWheel: true,
-  });
+  const CONFIG = {
+    THRESHOLDS: {
+      ENTER: 0.6,
+      EXIT: 0.9,
+    },
 
-  function updateScroll(time: number) {
-    lenis.raf(time);
+    TIMING_MS: {
+      HOLD: 300,
+      SNAP_IDLE: 140,
+    },
 
-    if (!viewport) return;
-    const viewportRect = viewport.getBoundingClientRect();
-    const containerCenter = viewportRect.top + viewportRect.height / 2;
+    ANIMATION: {
+      SNAP_DURATION_S: 0.75,
+      SNAP_EPSILON: 0.12,
+      SNAP_MAX_DISTANCE: 1.2,
 
-    // Increased spacing as requested: 120 -> 180
-    // Item height is ~100px text (depends on font size).
-    // Let's give it generous breathing room.
+      // Visual factors
+      OPACITY_FACTOR: {
+        DESKTOP: 0.35,
+        MOBILE: 0.6,
+      },
+      VISIBILITY_CUTOFF: {
+        DESKTOP: 2.5,
+        MOBILE: 1.6,
+      },
+      SCALE_FACTOR: 0.1,
+      MIN_SCALE: 0.8,
 
-    const itemSpacing = 180;
-    items.forEach((item) => {
-      const rect = item.getBoundingClientRect();
-      const itemCenter = rect.top + rect.height / 2;
+      ITEM_SPACING_RATIO: 0.11,
+    },
+    EASING: {
+      SNAP: (t: number) => 1 - Math.pow(1 - t, 3),
+      LENIS: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+    },
+  } as const;
 
-      const distance = Math.abs(itemCenter - containerCenter);
-      const normalized = distance / itemSpacing;
-
-      // Transparency
-      // 0 -> 1
-      // 1 -> 0.4
-      // 1.5 -> 0
-      let opacity = 1 - normalized * 0.6;
-      if (normalized >= 1.5) opacity = 0; // tighter cutoff for wider spacing
-      if (opacity < 0) opacity = 0;
-
-      // Scale
-      // 0 -> 1
-      // 1 -> 0.8
-      let scale = 1 - normalized * 0.2;
-      if (scale < 0.5) scale = 0.5;
-
-      // Angle
-      // const angle = Math.min(
-      //   Math.max(((itemCenter - containerCenter) / itemSpacing) * 20, -30),
-      //   30,
-      // );
-
-      item.style.transform = `scale(${scale})`;
-      item.style.opacity = opacity.toString();
-    });
-
-    requestAnimationFrame(updateScroll);
+  interface ItemMetric {
+    el: HTMLElement;
+    center: number;
+    height: number;
   }
 
-  // Start loop
-  requestAnimationFrame(updateScroll);
+  interface VisualState {
+    scale: number;
+    opacity: number;
+    normalizedDist: number;
+  }
+
+  interface ScrollState {
+    status: "IDLE" | "SNAPPING" | "PENDING";
+    activeIndex: number;
+    pendingIndex: number;
+    pendingSince: number;
+    lastNearestDistance: number;
+    lastNearestIndex: number;
+    isDesktop: boolean;
+    itemSpacing: number;
+    viewportHeight: number;
+    viewportCenter: number;
+  }
+
+  function measureMetrics(items: HTMLElement[]): ItemMetric[] {
+    return items.map((item) => ({
+      el: item,
+      height: item.offsetHeight,
+      center: item.offsetTop + item.offsetHeight / 2,
+    }));
+  }
+
+  function calculateItemSpacing(viewportHeight: number): number {
+    return viewportHeight * CONFIG.ANIMATION.ITEM_SPACING_RATIO;
+  }
+
+  function calculateVisuals(
+    distAbs: number,
+    itemSpacing: number,
+    isDesktop: boolean,
+  ): VisualState {
+    const normalizedDist = distAbs / itemSpacing;
+    const opacityFactor = isDesktop
+      ? CONFIG.ANIMATION.OPACITY_FACTOR.DESKTOP
+      : CONFIG.ANIMATION.OPACITY_FACTOR.MOBILE;
+    const visibilityCutoff = isDesktop
+      ? CONFIG.ANIMATION.VISIBILITY_CUTOFF.DESKTOP
+      : CONFIG.ANIMATION.VISIBILITY_CUTOFF.MOBILE;
+
+    let opacity = 1 - normalizedDist * opacityFactor;
+    if (normalizedDist >= visibilityCutoff) opacity = 0;
+    if (opacity < 0) opacity = 0;
+
+    let scale = 1 - normalizedDist * CONFIG.ANIMATION.SCALE_FACTOR;
+    if (scale < CONFIG.ANIMATION.MIN_SCALE) scale = CONFIG.ANIMATION.MIN_SCALE;
+
+    return { scale, opacity, normalizedDist };
+  }
+
+  /**
+   * Finds the nearest item index based on current scroll position.
+   */
+  function findNearestIndex(
+    metrics: ItemMetric[],
+    contentCenter: number,
+    itemSpacing: number,
+  ): { index: number; distance: number; distances: number[] } {
+    let nearestIndex = 0;
+    let nearestDistance = Number.POSITIVE_INFINITY;
+    const distances: number[] = [];
+
+    metrics.forEach((metric, index) => {
+      const distAbs = Math.abs(metric.center - contentCenter);
+      const normalized = distAbs / itemSpacing;
+      distances[index] = normalized;
+
+      if (normalized < nearestDistance) {
+        nearestDistance = normalized;
+        nearestIndex = index;
+      }
+    });
+
+    return { index: nearestIndex, distance: nearestDistance, distances };
+  }
+
+  type CardElements = {
+    title: HTMLElement | null;
+    summary: HTMLElement | null;
+  };
+
+  function renderCard(elements: CardElements, projectIndex: number) {
+    const project = projects[projectIndex];
+    if (!project) return;
+
+    elements.title && (elements.title.textContent = project.name);
+    elements.summary && (elements.summary.textContent = project.summary);
+
+  }
+
+  function renderItemVisuals(
+    metrics: ItemMetric[],
+    contentCenter: number,
+    state: ScrollState,
+  ) {
+    metrics.forEach((metric, i) => {
+      const distAbs = Math.abs(metric.center - contentCenter);
+      const { scale, opacity } = calculateVisuals(
+        distAbs,
+        state.itemSpacing,
+        state.isDesktop,
+      );
+
+      metric.el.style.transform = `scale(${scale})`;
+      metric.el.style.opacity = opacity.toString();
+    });
+  }
+
+  function updateActiveStateAttributes(
+    items: HTMLElement[],
+    prevIndex: number,
+    newIndex: number,
+  ) {
+    if (prevIndex >= 0 && items[prevIndex]) {
+      items[prevIndex].removeAttribute("data-active");
+    }
+    if (newIndex >= 0 && items[newIndex]) {
+      items[newIndex].setAttribute("data-active", "true");
+    }
+  }
+
+  function setupProjectScroll() {
+    const viewport = document.querySelector<HTMLElement>(".scroll-viewport");
+    const projectList = document.querySelector<HTMLElement>(".project-list");
+    const items = Array.from(
+      document.querySelectorAll<HTMLElement>(".project-item"),
+    );
+    const cardElements = {
+      title: document.querySelector<HTMLElement>(".project-card__title"),
+      summary: document.querySelector<HTMLElement>(".project-card__summary"),
+    } as const;
+
+    if (
+      !viewport ||
+      !projectList
+      // !Object.values(cardElements).every((el) => el)
+    ) {
+      console.warn("ProjectScrollManager: Required elements missing");
+      return;
+    }
+
+    let state: ScrollState = {
+      status: "IDLE",
+      activeIndex: -1,
+      pendingIndex: -1,
+      pendingSince: 0,
+      lastNearestDistance: Infinity,
+      lastNearestIndex: 0,
+      isDesktop: window.innerWidth >= 768,
+      itemSpacing: 0,
+      viewportHeight: 0,
+      viewportCenter: 0,
+    };
+
+    let metrics: ItemMetric[] = [];
+    let snapTimer = 0;
+
+    const updateLayout = () => {
+      const rect = viewport.getBoundingClientRect();
+      state.viewportHeight = rect.height;
+      state.viewportCenter = rect.height / 2;
+      state.isDesktop = window.innerWidth >= 768;
+      state.itemSpacing = calculateItemSpacing(state.viewportHeight);
+      metrics = measureMetrics(items);
+    };
+
+    const setActiveIndex = (index: number) => {
+      if (index === state.activeIndex) return;
+
+      updateActiveStateAttributes(items, state.activeIndex, index);
+      state.activeIndex = index;
+      renderCard(cardElements, index);
+    };
+
+    const snapToIndex = (index: number) => {
+      const metric = metrics[index];
+      if (!metric) return;
+
+      const offset = -(state.viewportHeight / 2 - metric.height / 2);
+
+      state.status = "SNAPPING";
+
+      lenis.scrollTo(metric.el, {
+        offset,
+        duration: CONFIG.ANIMATION.SNAP_DURATION_S,
+        easing: CONFIG.EASING.SNAP,
+        lock: true,
+        onComplete: () => {
+          state.status = "IDLE";
+          setActiveIndex(index);
+        },
+      });
+    };
+
+    const processScrollLogic = (time: number, contentCenter: number) => {
+      const {
+        index: nearestIndex,
+        distance: nearestDistance,
+        distances,
+      } = findNearestIndex(metrics, contentCenter, state.itemSpacing);
+
+      state.lastNearestIndex = nearestIndex;
+      state.lastNearestDistance = nearestDistance;
+
+      const activeDist =
+        state.activeIndex >= 0
+          ? (distances[state.activeIndex] ?? Infinity)
+          : Infinity;
+
+      const canSwitch =
+        state.activeIndex === -1 || activeDist >= CONFIG.THRESHOLDS.EXIT;
+
+      // Pending/Switch Logic
+      if (canSwitch && nearestDistance <= CONFIG.THRESHOLDS.ENTER) {
+        if (state.pendingIndex !== nearestIndex) {
+          state.pendingIndex = nearestIndex;
+          state.pendingSince = time;
+          state.status = "PENDING";
+        }
+
+        if (time - state.pendingSince >= CONFIG.TIMING_MS.HOLD) {
+          setActiveIndex(nearestIndex);
+          state.pendingIndex = -1;
+          state.status = "IDLE";
+        }
+      } else {
+        state.pendingIndex = -1;
+        if (state.status === "PENDING") state.status = "IDLE";
+      }
+    };
+
+    const scheduleSnap = () => {
+      window.clearTimeout(snapTimer);
+      snapTimer = window.setTimeout(() => {
+        if (state.status === "SNAPPING" || items.length === 0) return;
+
+        const activeDist =
+          state.activeIndex >= 0
+            ? Math.abs(
+                metrics[state.activeIndex].center -
+                  (lenis.scroll + state.viewportCenter),
+              ) / state.itemSpacing
+            : Infinity;
+
+        const canSwitch =
+          state.activeIndex === -1 || activeDist >= CONFIG.THRESHOLDS.EXIT;
+        const targetIndex = canSwitch
+          ? state.lastNearestIndex
+          : state.activeIndex;
+
+        if (targetIndex < 0) return;
+
+        if (state.lastNearestDistance <= CONFIG.ANIMATION.SNAP_EPSILON) return;
+        if (state.lastNearestDistance > CONFIG.ANIMATION.SNAP_MAX_DISTANCE)
+          return;
+
+        if (canSwitch && targetIndex !== state.activeIndex) {
+          setActiveIndex(targetIndex);
+        }
+        snapToIndex(targetIndex);
+      }, CONFIG.TIMING_MS.SNAP_IDLE);
+    };
+
+    const lenis = new Lenis({
+      wrapper: viewport,
+      content: projectList,
+      duration: 1.2,
+      easing: CONFIG.EASING.LENIS,
+      orientation: "vertical",
+      gestureOrientation: "vertical",
+      smoothWheel: true,
+    });
+
+    updateLayout();
+
+    window.addEventListener("resize", () => {
+      updateLayout();
+      if (state.activeIndex !== -1) {
+        snapToIndex(state.activeIndex);
+      }
+    });
+
+    projectList.addEventListener("click", (e) => {
+      const target = e.target as HTMLElement;
+      const item = target.closest(".project-item");
+      if (!item) return;
+
+      const anchor = target.closest("a");
+      if (anchor) e.preventDefault();
+
+      const indexAttr = item.getAttribute("data-index");
+      const index = indexAttr ? parseInt(indexAttr, 10) : NaN;
+
+      if (Number.isFinite(index)) {
+        state.pendingIndex = -1;
+        snapToIndex(index);
+      }
+    });
+
+    lenis.on("scroll", () => {
+      if (state.status !== "SNAPPING") {
+        scheduleSnap();
+      }
+    });
+
+    function loop(time: number) {
+      lenis.raf(time);
+      const contentCenter = lenis.scroll + state.viewportCenter;
+      renderItemVisuals(metrics, contentCenter, state);
+      processScrollLogic(time, contentCenter);
+      requestAnimationFrame(loop);
+    }
+
+    requestAnimationFrame(loop);
+  }
+
+  setupProjectScroll();
 </script>
