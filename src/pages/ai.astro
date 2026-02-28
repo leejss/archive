@@ -3,24 +3,21 @@ import Root from "@/layout/root.astro";
 import { formatPublishedAt } from "@/utils/common";
 import { getCollection } from "astro:content";
 
-const c = (await getCollection("c")).sort(
+const posts = (await getCollection("ai")).sort(
   (a, b) =>
     new Date(b.data.publishedAt).getTime() -
     new Date(a.data.publishedAt).getTime(),
 );
 ---
 
-<Root title="Learning C">
+<Root title="">
   <main class="container">
-    <div class="intro">
-      <h1 class="page-title">Learning C</h1>
-    </div>
     <ul class="post-list">
       {
-        c.length > 0 ? (
-          c.map((post) => (
+        posts.map((post) => {
+          return (
             <li class="post-item">
-              <a href={`/c/${post.id}`} class="post-link">
+              <a href={`/ai/${post.id}`} class="post-link">
                 <h2 class="post-title">{post.data.title}</h2>
                 {post.data.publishedAt && (
                   <time
@@ -32,41 +29,19 @@ const c = (await getCollection("c")).sort(
                 )}
               </a>
             </li>
-          ))
-        ) : (
-          <li class="empty-message">아직 작성된 기록이 없습니다.</li>
-        )
+          );
+        })
       }
     </ul>
   </main>
 </Root>
 
 <style>
-  .intro {
-    padding: 1rem 0.5rem;
-  }
-
-  .page-title {
+  .title {
     font-size: 3rem;
-    font-weight: 800;
-    letter-spacing: -0.02em;
+    font-weight: bold;
+    margin-bottom: 2rem;
     color: var(--default-text-color);
-  }
-
-  .page-desc {
-    font-size: 1.1rem;
-    line-height: 1.6;
-    color: var(--default-text-color);
-    opacity: 0.8;
-    max-width: 60ch;
-  }
-
-  .divider {
-    height: 1px;
-    background: var(--default-text-color);
-    opacity: 0.1;
-    margin-bottom: 3rem;
-    width: 100%;
   }
 
   .post-list {
@@ -85,17 +60,11 @@ const c = (await getCollection("c")).sort(
 
   .post-link {
     display: block;
-    padding: 1.5rem 0rem;
+    padding: 1.5rem;
     text-decoration: none;
     color: inherit;
     border-radius: 0.5rem;
-    transition:
-      transform 0.08s ease,
-      background-color 0.2s ease;
-  }
-
-  .post-link:hover {
-    background-color: rgba(var(--default-text-color-rgb), 0.03);
+    transition: transform 0.08s ease;
   }
 
   .post-title {
@@ -103,16 +72,25 @@ const c = (await getCollection("c")).sort(
     margin: 0;
     color: var(--default-text-color);
     display: inline;
-    /* Hover underline animation */
+    /* underline reveal */
     background-image: linear-gradient(currentColor, currentColor);
     background-repeat: no-repeat;
     background-position: 0 100%;
     background-size: 0% 2px;
-    transition: background-size 0.2s ease;
+    transition:
+      color 0.2s ease,
+      background-size 0.2s ease;
   }
 
-  .post-link:hover .post-title {
+  .post-link:hover .post-title,
+  .post-link:focus-visible .post-title {
     background-size: 100% 2px;
+  }
+
+  .post-link:focus-visible {
+    outline: 2px solid var(--default-border-hover-color);
+    outline-offset: 2px;
+    border-radius: 0.5rem;
   }
 
   .post-date {
@@ -120,15 +98,6 @@ const c = (await getCollection("c")).sort(
     margin-top: 0.5rem;
     font-size: 0.9rem;
     color: var(--default-text-color);
-    opacity: 0.6;
-    font-family: "AtkinsonHyperlegibleMono", monospace;
-  }
-
-  .empty-message {
-    padding: 3rem 0;
-    text-align: center;
-    color: var(--default-text-color);
-    opacity: 0.6;
-    font-style: italic;
+    opacity: 0.8;
   }
 </style>
