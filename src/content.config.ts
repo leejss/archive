@@ -2,23 +2,14 @@ import { defineCollection, z } from "astro:content";
 import { glob } from "astro/loaders";
 
 const note = defineCollection({
-  loader: glob({ pattern: "**/*.md", base: "./src/content/notes" }),
-  schema: z.object({
-    title: z.string(),
-    draft: z.boolean().optional().default(false),
-    publishedAt: z.date(),
-    tags: z.array(z.string()).optional(),
-  }),
+	loader: glob({ pattern: "**/*.md", base: "./src/content/notes" }),
+	schema: z.object({
+		title: z.string(),
+		draft: z.boolean().optional().default(false),
+		publishedAt: z.date(),
+		tags: z.array(z.string()).optional(),
+		aiGenerated: z.boolean().optional().default(false),
+	}),
 });
 
-const ai = defineCollection({
-  loader: glob({ pattern: "**/*.md", base: "./src/content/ai" }),
-  schema: z.object({
-    title: z.string(),
-    draft: z.boolean().optional().default(false),
-    publishedAt: z.date(),
-    tags: z.array(z.string()).optional(),
-  }),
-});
-
-export const collections = { note, ai };
+export const collections = { note };

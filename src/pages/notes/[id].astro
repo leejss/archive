@@ -1,6 +1,6 @@
 ---
-import Root from "@/layout/root.astro";
 import { getCollection, render } from "astro:content";
+import Root from "@/layout/root.astro";
 
 export async function getStaticPaths() {
   const notes = await getCollection("note");
@@ -20,6 +20,7 @@ const { title, publishedAt } = post.data;
     <header class="header">
       <h1 class="title">{title}</h1>
       <div class="meta">
+        {post.data.aiGenerated && <span class="ai-badge">AI Generated</span>}
         {
           publishedAt && (
             <span>
@@ -61,11 +62,19 @@ const { title, publishedAt } = post.data;
 
   .meta {
     display: flex;
+    align-items: center;
     gap: 1rem;
     margin: 1rem 0 0;
     font-size: clamp(0.8rem, 2vw, 0.9rem);
     color: var(--default-text-color);
     opacity: 0.8;
+  }
+
+  .ai-badge {
+    background: rgba(150, 150, 150, 0.2);
+    padding: 0.2rem 0.5rem;
+    border-radius: 0.25rem;
+    font-weight: 500;
   }
 
   /* 마크다운 콘텐츠 컨테이너 추가 스타일 */

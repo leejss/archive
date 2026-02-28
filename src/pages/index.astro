@@ -1,7 +1,7 @@
 ---
+import { getCollection } from "astro:content";
 import Root from "@/layout/root.astro";
 import { formatPublishedAt } from "@/utils/common";
-import { getCollection } from "astro:content";
 
 const notes = (await getCollection("note")).sort(
   (a, b) =>
@@ -18,7 +18,10 @@ const notes = (await getCollection("note")).sort(
           return (
             <li class="post-item">
               <a href={`/notes/${post.id}`} class="post-link">
-                <h2 class="post-title">{post.data.title}</h2>
+                <h2 class="post-title">
+                  {post.data.aiGenerated && <span class="ai-badge">[AI]</span>}{" "}
+                  {post.data.title}
+                </h2>
                 {post.data.publishedAt && (
                   <time
                     datetime={post.data.publishedAt.toISOString()}
@@ -42,6 +45,18 @@ const notes = (await getCollection("note")).sort(
     font-weight: bold;
     margin-bottom: 2rem;
     color: var(--default-text-color);
+  }
+
+  .ai-badge {
+    display: inline-block;
+    font-size: 0.75em;
+    font-weight: 500;
+    color: var(--default-text-color);
+    background: rgba(150, 150, 150, 0.2);
+    padding: 0.1em 0.4em;
+    border-radius: 0.25rem;
+    margin-right: 0.25rem;
+    vertical-align: middle;
   }
 
   .post-list {
