@@ -1,5 +1,5 @@
 ---
-title: 구글 로그인을 누른 뒤에 일어나는 일
+title: OAuth 2.0, OIDC, PKCE로 이해하는 구글 로그인 플로우
 publishedAt: 2026-03-10
 tags: []
 ---
