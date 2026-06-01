@@ -2,31 +2,10 @@
 @import "./reset.css";
 @import "./markdown.css";
 
-@font-face {
-  font-family: "AtkinsonHyperlegibleMono";
-  src: url("/fonts/AtkinsonHyperlegibleMono-VariableFont_wght.ttf")
-    format("truetype");
-  font-weight: 400 700;
-  font-style: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: "AtkinsonHyperlegible";
-  src: url("/fonts/AtkinsonHyperlegible-Regular.ttf") format("truetype");
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: "AtkinsonHyperlegible";
-  src: url("/fonts/AtkinsonHyperlegible-Bold.ttf") format("truetype");
-  font-weight: 700;
-  font-style: normal;
-  font-display: swap;
-}
 :root {
-  font-family: "AtkinsonHyperlegibleMono", ui-monospace, monospace;
+  --font-sans: "IBM Plex Sans KR", system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, monospace;
+  font-family: var(--font-sans);
   color: var(--default-text-color);
   background: var(--default-bg-color);
   color-scheme: dark;
@@ -58,6 +37,13 @@ h4,
 h5,
 h6 {
   margin: 0;
+}
+
+code,
+pre,
+kbd,
+samp {
+  font-family: var(--font-mono);
 }
 
 .container {

@@ -7,12 +7,6 @@ export interface Project {
 
 export const projects: Project[] = [
   {
-    name: "Chaek",
-    webUrl: "https://chaek.app/",
-    // githubUrl: "",
-    summary: "AI Assistant for Book Generation.",
-  },
-  {
     name: "Repo Cleanser",
     webUrl: "https://repo-cleanser.vercel.app",
     // githubUrl: "",

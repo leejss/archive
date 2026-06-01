@@ -13,34 +13,36 @@ export async function getStaticPaths() {
 const { post } = Astro.props;
 const { Content } = await render(post);
 const { title, publishedAt } = post.data;
+const tags = post.data.tags ?? [];
+
+function dateCode(date: Date) {
+  const yyyy = date.getFullYear();
+  const mm = String(date.getMonth() + 1).padStart(2, "0");
+  const dd = String(date.getDate()).padStart(2, "0");
+  return `${yyyy}${mm}${dd}`;
+}
 ---
 
 <Root title={title}>
   <article class="container">
-    <a class="back-link" href="/">[notes]</a>
-    <p class="section-divider">~~~</p>
-    <header class="header">
-      <p class="section-label">NOTE:</p>
+    <a class="back-link" href="/">Notes</a>
+    <header class="note-header">
       <h1 class="title">{title}</h1>
       <div class="meta">
-        {
-          publishedAt && (
-            <span>
-              PUBLISHED:{" "}
-              <time datetime={publishedAt.toISOString()}>
-                {publishedAt.toLocaleDateString("ko-KR", {
-                  year: "numeric",
-                  month: "long",
-                  day: "numeric",
-                })}
-              </time>
-            </span>
-          )
-        }
-        {post.data.aiGenerated && <span>AI: GENERATED</span>}
+      {
+        publishedAt && (
+          <span>
+            <time datetime={publishedAt.toISOString()}>{dateCode(publishedAt)}</time>
+          </span>
+        )
+      }
+      {
+        (tags.length > 0 || post.data.aiGenerated) && (
+          <span>{[post.data.aiGenerated ? "AI" : "", ...tags].filter(Boolean).join(" · ")}</span>
+        )
+      }
       </div>
     </header>
-    <p class="section-divider">~~~</p>
     <div class="markdown-content">
       <Content />
     </div>
@@ -54,22 +56,23 @@ const { title, publishedAt } = post.data;
     font-weight: 700;
   }
 
-  .header {
+  .note-header {
     display: grid;
-    gap: 0.4rem;
+    gap: 0.8rem;
+    padding: 3rem 0 2.25rem;
   }
 
-  .section-label,
-  .header .title {
+  .note-header .title {
     font-size: 1rem;
     font-weight: 700;
     color: var(--default-text-color);
   }
 
   .meta {
-    display: grid;
-    gap: 0.2rem;
     color: var(--default-muted-color);
-    font-size: 0.95rem;
+    display: flex;
+    font-family: var(--font-mono);
+    flex-wrap: wrap;
+    gap: 0.5rem 1rem;
   }
 </style>

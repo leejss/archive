@@ -60,7 +60,7 @@
 
 .markdown-content code,
 .markdown-content pre {
-  font-family: "AtkinsonHyperlegibleMono", ui-monospace, monospace;
+  font-family: var(--font-mono);
 }
 
 .markdown-content code {

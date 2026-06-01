@@ -9,7 +9,6 @@ interface Props {
 }
 
 const { title, useSlotContainer = true } = Astro.props;
-const siteLabel = SITE.title.toUpperCase();
 const getTitle = () => {
   if (title) {
     return `${SITE.title} | ${title}`;
@@ -42,19 +41,11 @@ const getTitle = () => {
     <meta name="twitter:title" content={getTitle()} />
     <meta name="twitter:description" content={SITE.description} />
     <meta name="twitter:image" content={`${SITE.baseURL}/og-image.png`} />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      rel="preload"
-      href="/fonts/AtkinsonHyperlegible-Regular.ttf"
-      as="font"
-      type="font/ttf"
-      crossorigin
-    />
-    <link
-      rel="preload"
-      href="/fonts/AtkinsonHyperlegible-Bold.ttf"
-      as="font"
-      type="font/ttf"
-      crossorigin
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans+KR:wght@400;500;600;700&display=swap"
     />
     <title>{getTitle()}</title>
     <link
@@ -78,7 +69,7 @@ const getTitle = () => {
   <body>
     <nav class="site-navigation" aria-label="Primary">
       <div class="nav-content">
-        <a href="/" class="site-title">{siteLabel}<span class="cursor"></span></a>
+        <a href="/" class="site-title">{SITE.title}</a>
         <div class="nav-links">
           <a href="/" class="nav-link">notes</a>
           <a href="/projects" class="nav-link">projects</a>
@@ -130,39 +121,13 @@ const getTitle = () => {
     font-size: 1rem;
   }
 
-  .nav-link::before {
-    content: "[";
-    color: var(--default-muted-color);
-  }
-
-  .nav-link::after {
-    content: "]";
-    color: var(--default-muted-color);
-  }
-
   .site-title:hover,
   .nav-link:hover {
     color: var(--default-link-color);
   }
 
-  .cursor {
-    display: inline-block;
-    width: 0.65em;
-    height: 1em;
-    margin-left: 0.45em;
-    background: var(--default-text-color);
-    transform: translateY(0.14em);
-    animation: blink 1.1s steps(1, end) infinite;
-  }
-
   .slot-container {
     min-height: 100vh;
-  }
-
-  @keyframes blink {
-    50% {
-      opacity: 0;
-    }
   }
 
   @media (max-width: 640px) {

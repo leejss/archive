@@ -5,48 +5,31 @@ import { projects } from "../data/projects";
 
 <Root title="Projects">
   <main class="container">
-    <p class="section-divider">~~~</p>
     <section class="project-section" aria-labelledby="projects-title">
-      <h1 id="projects-title" class="section-label">PROJECTS:</h1>
-      <ul class="project-list">
+      <h1 id="projects-title" class="section-label">Projects</h1>
+      <div class="project-list">
         {
           projects.map((project) => (
-            <li class="project-item">
-              <p>
-                <span class="muted">- [</span>
-                <a
-                  href={project.webUrl ?? project.githubUrl ?? "#"}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  {project.name}
-                </a>
-                <span class="muted">]</span>
-              </p>
+            <article class="project-item">
+              <a
+                href={project.webUrl ?? project.githubUrl ?? "#"}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {project.name}
+              </a>
               <p class="project-summary">{project.summary}</p>
-              <p class="project-links">
-                {project.webUrl && (
-                  <a href={project.webUrl} target="_blank" rel="noopener noreferrer">
-                    [web]
-                  </a>
-                )}
-                {project.githubUrl && (
-                  <a href={project.githubUrl} target="_blank" rel="noopener noreferrer">
-                    [github]
-                  </a>
-                )}
-              </p>
-            </li>
+            </article>
           ))
         }
-      </ul>
+      </div>
     </section>
   </main>
 </Root>
 
 <style>
   .project-section {
-    padding-top: 1.75rem;
+    padding-top: 4.5rem;
   }
 
   .section-label {
@@ -57,10 +40,8 @@ import { projects } from "../data/projects";
 
   .project-list {
     display: grid;
-    gap: 1.3rem;
-    list-style: none;
-    margin: 0;
-    padding: 0;
+    gap: 1rem;
+    margin-top: 1.4rem;
   }
 
   .project-item {
@@ -69,17 +50,6 @@ import { projects } from "../data/projects";
   }
 
   .project-summary {
-    color: var(--default-text-color);
-    padding-left: 1.5rem;
-  }
-
-  .project-links {
-    display: flex;
-    gap: 0.7rem;
-    padding-left: 1.5rem;
-  }
-
-  .muted {
     color: var(--default-muted-color);
   }
 </style>

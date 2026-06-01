@@ -1,73 +1,46 @@
 ---
 import { getCollection } from "astro:content";
 import Root from "@/layout/root.astro";
-import { formatPublishedAt } from "@/utils/common";
 
 const notes = (await getCollection("note")).sort(
   (a, b) =>
     new Date(b.data.publishedAt).getTime() -
     new Date(a.data.publishedAt).getTime(),
 );
+
+function dateCode(date: Date) {
+  const yyyy = date.getFullYear();
+  const mm = String(date.getMonth() + 1).padStart(2, "0");
+  const dd = String(date.getDate()).padStart(2, "0");
+  return `${yyyy}${mm}${dd}`;
+}
 ---
 
 <Root title="">
   <main class="container">
-    <header class="terminal-header">
-      <p>STATUS: ONLINE</p>
-      <p>WRITING: {notes.length} NOTES</p>
-    </header>
-    <p class="section-divider">~~~</p>
-    <p class="section-label">WRITING:</p>
-    <ul class="post-list">
-      {
-        notes.map((post) => {
-          return (
-            <li class="post-item">
-              <p class="post-title-line">
-                <span class="post-prefix">- [</span>
-                <a href={`/notes/${post.id}`} class="post-link">
-                  {post.data.title}
-                </a>
-                <span class="post-prefix">]</span>
-                {post.data.aiGenerated && <span class="ai-badge"> [AI]</span>}
-              </p>
-              {post.data.publishedAt && (
-                <time
-                  datetime={post.data.publishedAt.toISOString()}
-                  class="post-date"
-                >
-                  {" "}({formatPublishedAt(post.data.publishedAt)})
-                </time>
-              )}
-            </li>
-          );
-        })
-      }
+    <ul class="post-list" aria-label="Notes">
+      {notes.map((post) => (
+        <li class="post-item">
+          <time datetime={post.data.publishedAt.toISOString()} class="post-date">
+            {dateCode(post.data.publishedAt)}
+          </time>
+          <a href={`/notes/${post.id}`} class="post-link">
+            {post.data.title}
+          </a>
+        </li>
+      ))}
     </ul>
   </main>
 </Root>
 
 <style>
-  .terminal-header {
-    display: grid;
-    gap: 0.3rem;
-    padding-top: 1.75rem;
-  }
-
-  .terminal-header p,
-  .section-label,
   .post-item {
     font-size: 1rem;
   }
 
-  .section-label {
-    margin-bottom: 0.35rem;
-    font-weight: 700;
-    color: var(--default-text-color);
-  }
-
-  .ai-badge {
+  .post-date {
     color: var(--default-muted-color);
+    font-family: var(--font-mono);
   }
 
   .post-list {
@@ -76,12 +49,14 @@ const notes = (await getCollection("note")).sort(
     margin: 0;
     display: grid;
     gap: 0.7rem;
+    padding-top: 4.5rem;
   }
 
-  .post-title-line {
+  .post-item {
     align-items: baseline;
-    display: flex;
-    min-width: 0;
+    column-gap: 1.2rem;
+    display: grid;
+    grid-template-columns: 9ch minmax(0, 1fr);
   }
 
   .post-link {
@@ -95,13 +70,8 @@ const notes = (await getCollection("note")).sort(
     outline-offset: 0.2rem;
   }
 
-  .post-prefix {
-    color: var(--default-muted-color);
-  }
-
   .post-date {
-    display: block;
-    color: var(--default-muted-color);
-    padding-left: 2.1rem;
+    display: inline-block;
+    width: 9ch;
   }
 </style>
