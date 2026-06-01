@@ -12,25 +12,33 @@ const notes = (await getCollection("note")).sort(
 
 <Root title="">
   <main class="container">
+    <header class="terminal-header">
+      <p>STATUS: ONLINE</p>
+      <p>WRITING: {notes.length} NOTES</p>
+    </header>
+    <p class="section-divider">~~~</p>
+    <p class="section-label">WRITING:</p>
     <ul class="post-list">
       {
         notes.map((post) => {
           return (
             <li class="post-item">
-              <a href={`/notes/${post.id}`} class="post-link">
-                <h2 class="post-title">
-                  {post.data.aiGenerated && <span class="ai-badge">[AI]</span>}{" "}
+              <p class="post-title-line">
+                <span class="post-prefix">- [</span>
+                <a href={`/notes/${post.id}`} class="post-link">
                   {post.data.title}
-                </h2>
-                {post.data.publishedAt && (
-                  <time
-                    datetime={post.data.publishedAt.toISOString()}
-                    class="post-date"
-                  >
-                    {formatPublishedAt(post.data.publishedAt)}
-                  </time>
-                )}
-              </a>
+                </a>
+                <span class="post-prefix">]</span>
+                {post.data.aiGenerated && <span class="ai-badge"> [AI]</span>}
+              </p>
+              {post.data.publishedAt && (
+                <time
+                  datetime={post.data.publishedAt.toISOString()}
+                  class="post-date"
+                >
+                  {" "}({formatPublishedAt(post.data.publishedAt)})
+                </time>
+              )}
             </li>
           );
         })
@@ -40,79 +48,60 @@ const notes = (await getCollection("note")).sort(
 </Root>
 
 <style>
-  .title {
-    font-size: 3rem;
-    font-weight: bold;
-    margin-bottom: 2rem;
+  .terminal-header {
+    display: grid;
+    gap: 0.3rem;
+    padding-top: 1.75rem;
+  }
+
+  .terminal-header p,
+  .section-label,
+  .post-item {
+    font-size: 1rem;
+  }
+
+  .section-label {
+    margin-bottom: 0.35rem;
+    font-weight: 700;
     color: var(--default-text-color);
   }
 
   .ai-badge {
-    display: inline-block;
-    font-size: 0.75em;
-    font-weight: 500;
-    color: var(--default-text-color);
-    background: rgba(150, 150, 150, 0.2);
-    padding: 0.1em 0.4em;
-    border-radius: 0.25rem;
-    margin-right: 0.25rem;
-    vertical-align: middle;
+    color: var(--default-muted-color);
   }
 
   .post-list {
     list-style: none;
     padding: 0;
     margin: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 1.5rem;
+    display: grid;
+    gap: 0.7rem;
   }
 
-  .post-item {
-    border-bottom: 1px solid transparent;
-    transition: border-color 0.2s ease;
+  .post-title-line {
+    align-items: baseline;
+    display: flex;
+    min-width: 0;
   }
 
   .post-link {
-    display: block;
-    padding: 1.5rem;
-    text-decoration: none;
-    color: inherit;
-    border-radius: 0.5rem;
-    transition: transform 0.08s ease;
-  }
-
-  .post-title {
-    font-size: 1.5rem;
-    margin: 0;
-    color: var(--default-text-color);
-    display: inline;
-    /* underline reveal */
-    background-image: linear-gradient(currentColor, currentColor);
-    background-repeat: no-repeat;
-    background-position: 0 100%;
-    background-size: 0% 2px;
-    transition:
-      color 0.2s ease,
-      background-size 0.2s ease;
-  }
-
-  .post-link:hover .post-title,
-  .post-link:focus-visible .post-title {
-    background-size: 100% 2px;
+    color: var(--default-link-color);
+    min-width: 0;
+    overflow-wrap: anywhere;
   }
 
   .post-link:focus-visible {
-    outline: 2px solid var(--default-border-hover-color);
-    outline-offset: 2px;
-    border-radius: 0.5rem;
+    outline: 1px solid var(--default-border-hover-color);
+    outline-offset: 0.2rem;
+  }
+
+  .post-prefix {
+    color: var(--default-muted-color);
   }
 
   .post-date {
     display: block;
-    margin-top: 0.5rem;
-    font-size: 0.9rem;
-    color: var(--default-text-color);
-    opacity: 0.8;
+    color: var(--default-muted-color);
+    padding-left: 2.1rem;
   }
 </style>

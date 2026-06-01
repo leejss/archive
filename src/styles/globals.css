@@ -6,7 +6,7 @@
   font-family: "AtkinsonHyperlegibleMono";
   src: url("/fonts/AtkinsonHyperlegibleMono-VariableFont_wght.ttf")
     format("truetype");
-  font-weight: 400;
+  font-weight: 400 700;
   font-style: normal;
   font-display: swap;
 }
@@ -26,8 +26,16 @@
   font-display: swap;
 }
 :root {
-  font-family: "AtkinsonHyperlegible", sans-serif;
+  font-family: "AtkinsonHyperlegibleMono", ui-monospace, monospace;
   color: var(--default-text-color);
+  background: var(--default-bg-color);
+  color-scheme: dark;
+  font-size: 15px;
+  letter-spacing: 0;
+}
+
+[data-theme="light"] {
+  color-scheme: light;
 }
 
 html,
@@ -38,6 +46,9 @@ body {
 
 body {
   background-color: var(--default-bg-color);
+  min-height: 100vh;
+  line-height: 1.5;
+  text-rendering: geometricPrecision;
 }
 
 h1,
@@ -50,7 +61,29 @@ h6 {
 }
 
 .container {
-  width: min(100% - 2rem, 100ch);
-  margin-inline: auto;
-  padding: 2rem 0;
+  width: min(100% - 2rem, 82ch);
+  margin-left: clamp(1rem, 5%, 3rem);
+  margin-right: auto;
+  padding: 2rem 0 5rem;
+}
+
+a {
+  color: var(--default-link-color);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.16em;
+}
+
+a:hover {
+  color: var(--default-text-color);
+}
+
+::selection {
+  background: var(--default-text-color);
+  color: var(--default-bg-color);
+}
+
+.section-divider {
+  color: var(--default-muted-color);
+  margin: 2rem 0;
 }

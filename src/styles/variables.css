@@ -1,15 +1,19 @@
 :root {
-  --default-text-color: oklch(15% 0 0);
-  --default-bg-color: oklch(100% 0 0);
-  --default-border-color: oklch(95% 0.01 270);
-  --default-border-hover-color: oklch(85% 0.01 270);
-  --default-shadow-color: oklch(85% 0.01 270);
+  --default-text-color: #efefef;
+  --default-bg-color: #050505;
+  --default-muted-color: #9b9b9b;
+  --default-link-color: #a9a7ff;
+  --default-border-color: #242424;
+  --default-border-hover-color: #5f5f5f;
+  --default-shadow-color: #000;
 }
 
-[data-theme="dark"] {
-  --default-text-color: oklch(98% 0 0);
-  --default-bg-color: oklch(20% 0.03 270);
-  --default-border-color: oklch(45% 0.01 270);
-  --default-border-hover-color: oklch(55% 0.01 270);
-  --default-shadow-color: oklch(25% 0.01 270);
+[data-theme="light"] {
+  --default-text-color: #101010;
+  --default-bg-color: #f6f4ee;
+  --default-muted-color: #67645d;
+  --default-link-color: #3c3ab8;
+  --default-border-color: #d8d3c7;
+  --default-border-hover-color: #8a8579;
+  --default-shadow-color: #ddd6c8;
 }
