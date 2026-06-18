@@ -55,13 +55,15 @@ samp {
 
 a {
   color: var(--default-link-color);
-  text-decoration: underline;
+  text-decoration: none;
   text-decoration-thickness: 1px;
   text-underline-offset: 0.16em;
 }
 
+
 a:hover {
   color: var(--default-text-color);
+  text-decoration: underline;
 }
 
 ::selection {

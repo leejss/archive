@@ -25,7 +25,7 @@ function dateCode(date: Date) {
 
 <Root title={title}>
   <article class="container">
-    <a class="back-link" href="/">Notes</a>
+    <!-- <a class="back-link" href="/">Notes</a> -->
     <header class="note-header">
       <h1 class="title">{title}</h1>
       <div class="meta">
@@ -59,13 +59,15 @@ function dateCode(date: Date) {
   .note-header {
     display: grid;
     gap: 0.8rem;
-    padding: 3rem 0 2.25rem;
+    padding-bottom: 2.25rem;
   }
 
   .note-header .title {
-    font-size: 1rem;
-    font-weight: 700;
     color: var(--default-text-color);
+    font-size: 1.85rem;
+    font-weight: 700;
+    line-height: 1.25;
+    max-width: 76ch;
   }
 
   .meta {

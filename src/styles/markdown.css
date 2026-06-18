@@ -15,24 +15,64 @@
 .markdown-content h4,
 .markdown-content h5,
 .markdown-content h6 {
-  font-size: 1rem;
+  color: var(--default-text-color);
   font-weight: 700;
-  line-height: 1.5;
+  line-height: 1.35;
+  max-width: 76ch;
+  scroll-margin-top: 2rem;
 }
 
-.markdown-content h1::before {
-  content: "# ";
-  color: var(--default-muted-color);
+.markdown-content h1 {
+  font-size: 1.55rem;
+  margin-top: 2.75rem;
 }
 
-.markdown-content h2::before {
-  content: "## ";
-  color: var(--default-muted-color);
+.markdown-content h2 {
+  border-bottom: 1px solid var(--default-border-color);
+  font-size: 1.32rem;
+  margin-top: 2.35rem;
+  padding-bottom: 0.35rem;
 }
 
-.markdown-content h3::before {
-  content: "### ";
+.markdown-content h3 {
+  font-size: 1.16rem;
+  margin-top: 2rem;
+}
+
+.markdown-content h4 {
+  font-size: 1.06rem;
+  margin-top: 1.75rem;
+}
+
+.markdown-content h5 {
+  color: color-mix(in srgb, var(--default-text-color) 88%, var(--default-muted-color));
+  font-size: 1rem;
+  margin-top: 1.55rem;
+}
+
+.markdown-content h6 {
   color: var(--default-muted-color);
+  font-size: 1rem;
+  font-weight: 600;
+  margin-top: 1.4rem;
+}
+
+.markdown-content > h1:first-child,
+.markdown-content > h2:first-child,
+.markdown-content > h3:first-child,
+.markdown-content > h4:first-child,
+.markdown-content > h5:first-child,
+.markdown-content > h6:first-child {
+  margin-top: 0;
+}
+
+.markdown-content h1 + *,
+.markdown-content h2 + *,
+.markdown-content h3 + *,
+.markdown-content h4 + *,
+.markdown-content h5 + *,
+.markdown-content h6 + * {
+  margin-top: 0.75rem;
 }
 
 .markdown-content p {
@@ -63,10 +103,23 @@
   font-family: var(--font-mono);
 }
 
-.markdown-content code {
-  background: color-mix(in srgb, var(--default-border-color) 70%, transparent);
-  border: 1px solid var(--default-border-color);
-  padding: 0.05rem 0.25rem;
+.markdown-content :not(pre) > code {
+  background: color-mix(in srgb, var(--default-border-color) 55%, transparent);
+  border: 1px solid color-mix(in srgb, #39ff14 42%, var(--default-border-color));
+  border-radius: 4px;
+  box-shadow: 0 0 0 1px color-mix(in srgb, #39ff14 12%, transparent);
+  color: #39ff14;
+  font-size: 0.9em;
+  line-height: 1;
+  padding: 0.12rem 0.32rem;
+  white-space: break-spaces;
+}
+
+[data-theme="light"] .markdown-content :not(pre) > code {
+  background: color-mix(in srgb, #39ff14 10%, var(--default-bg-color));
+  border-color: color-mix(in srgb, #00c853 36%, var(--default-border-color));
+  box-shadow: 0 0 0 1px color-mix(in srgb, #00c853 10%, transparent);
+  color: #008f3a;
 }
 
 .markdown-content pre {

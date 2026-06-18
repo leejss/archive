@@ -60,7 +60,6 @@ const getTitle = () => {
           const savedTheme = localStorage.getItem("blog-theme");
           return savedTheme || "dark";
         }
-
         const theme = getInitialTheme();
         document.documentElement.setAttribute("data-theme", theme);
       })();
@@ -69,10 +68,10 @@ const getTitle = () => {
   <body>
     <nav class="site-navigation" aria-label="Primary">
       <div class="nav-content">
-        <a href="/" class="site-title">{SITE.title}</a>
+        <!-- <a href="/" class="site-title">{SITE.title}</a> -->
         <div class="nav-links">
-          <a href="/" class="nav-link">notes</a>
-          <a href="/projects" class="nav-link">projects</a>
+          <a href="/" class="nav-link">WRITINGS</a>
+          <a href="/projects" class="nav-link">PROJECTS</a>
           <ThemeSetting />
         </div>
       </div>
