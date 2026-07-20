@@ -1,34 +1,201 @@
-<div class="theme-container">
-  <button id="theme-toggle" class="theme-button" aria-label="Toggle theme"></button>
-</div>
+<button id="theme-toggle" class="theme-button" type="button" aria-label="Switch theme">
+  <span class="orb" aria-hidden="true">
+    <span class="orb-layer orb-sun">
+      <span class="orb-halo"></span>
+      <span class="orb-glow"></span>
+      <span class="orb-core"></span>
+    </span>
+    <span class="orb-layer orb-moon">
+      <span class="orb-halo"></span>
+      <span class="orb-glow"></span>
+      <span class="orb-core"></span>
+    </span>
+  </span>
+</button>
 
 <style>
-  .theme-container {
-    display: inline-flex;
-  }
-
   .theme-button {
-    background: transparent;
-    border: none;
-    color: var(--default-text-color);
-    cursor: pointer;
-    font: inherit;
-    font-weight: 700;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.75rem;
+    height: 2.75rem;
     padding: 0;
+    border: none;
+    border-radius: 50%;
+    background: transparent;
+    cursor: pointer;
+    view-transition-name: theme-orb;
+    -webkit-tap-highlight-color: transparent;
   }
 
-  .theme-button::before {
-    content: "LIGHT";
-  }
-
-  html[data-theme="light"] .theme-button::before {
-    content: "DARK";
-  }
-
-  .theme-button:hover,
   .theme-button:focus-visible {
-    color: var(--default-link-color);
-    outline: none;
+    outline: 1.5px solid var(--default-link-color);
+    outline-offset: 3px;
+  }
+
+  .orb {
+    position: relative;
+    width: 1rem;
+    height: 1rem;
+    transition: transform 0.3s ease;
+  }
+
+  .theme-button:hover .orb {
+    transform: scale(1.12);
+  }
+
+  .orb-layer {
+    position: absolute;
+    inset: 0;
+    transition:
+      opacity 0.45s ease,
+      transform 0.45s ease;
+  }
+
+  .orb-halo,
+  .orb-glow,
+  .orb-core {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+  }
+
+  /* 광원 가장자리는 산란 때문에 경계가 흐려진다 — core 림을 페이드시켜
+     blur된 glow가 실루엣을 만들게 한다 */
+  .orb-core {
+    -webkit-mask-image: radial-gradient(circle closest-side, #000 62%, transparent 100%);
+    mask-image: radial-gradient(circle closest-side, #000 62%, transparent 100%);
+  }
+
+  /* --- Sun (light theme) --- */
+  .orb-sun {
+    opacity: 0;
+    transform: scale(0.5) rotate(-120deg);
+  }
+
+  .orb-sun .orb-core {
+    background: radial-gradient(
+      circle at 36% 34%,
+      #fffbe6 0%,
+      #ffe89b 38%,
+      #ffc14f 72%,
+      #ff9636 100%
+    );
+  }
+
+  .orb-sun .orb-glow {
+    background: #ffc85e;
+    filter: blur(3px);
+    transform: scale(1.3);
+    opacity: 1;
+  }
+
+  .orb-sun .orb-halo {
+    background: radial-gradient(
+      circle,
+      rgba(255, 208, 116, 0.55) 0%,
+      rgba(255, 186, 92, 0.22) 42%,
+      rgba(255, 186, 92, 0) 70%
+    );
+    transform: scale(2.5);
+  }
+
+  /* --- Moon (dark theme) --- */
+  .orb-moon {
+    opacity: 1;
+    transform: none;
+  }
+
+  .orb-moon .orb-core {
+    background: radial-gradient(
+      circle at 36% 34%,
+      #ffffff 0%,
+      #e6e9f4 42%,
+      #c2c7dd 78%,
+      #a9aec9 100%
+    );
+  }
+
+  .orb-moon .orb-core::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background:
+      radial-gradient(circle 1.6px at 32% 42%, rgba(133, 141, 175, 0.5), transparent 100%),
+      radial-gradient(circle 1.1px at 58% 66%, rgba(133, 141, 175, 0.45), transparent 100%),
+      radial-gradient(circle 1.2px at 66% 30%, rgba(133, 141, 175, 0.4), transparent 100%);
+  }
+
+  .orb-moon .orb-glow {
+    background: #ccd5f2;
+    filter: blur(3px);
+    transform: scale(1.2);
+    opacity: 0.7;
+  }
+
+  .orb-moon .orb-halo {
+    background: radial-gradient(
+      circle,
+      rgba(198, 210, 246, 0.4) 0%,
+      rgba(169, 183, 231, 0.14) 45%,
+      rgba(169, 183, 231, 0) 70%
+    );
+    transform: scale(2.2);
+  }
+
+  /* --- Theme state --- */
+  html[data-theme="light"] .orb-sun {
+    opacity: 1;
+    transform: none;
+  }
+
+  html[data-theme="light"] .orb-moon {
+    opacity: 0;
+    transform: scale(0.5) rotate(120deg);
+  }
+
+  /* --- Breathing light --- */
+  @media (prefers-reduced-motion: no-preference) {
+    html[data-theme="light"] .orb-sun .orb-halo {
+      animation: sun-breathe 4.5s ease-in-out infinite;
+    }
+
+    html:not([data-theme="light"]) .orb-moon .orb-halo {
+      animation: moon-breathe 6s ease-in-out infinite;
+    }
+  }
+
+  @keyframes sun-breathe {
+    0%,
+    100% {
+      transform: scale(2.5);
+      opacity: 1;
+    }
+    50% {
+      transform: scale(2.75);
+      opacity: 0.8;
+    }
+  }
+
+  @keyframes moon-breathe {
+    0%,
+    100% {
+      transform: scale(2.2);
+      opacity: 1;
+    }
+    50% {
+      transform: scale(2.35);
+      opacity: 0.85;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .orb,
+    .orb-layer {
+      transition: none;
+    }
   }
 </style>
 
@@ -39,16 +206,58 @@
     "theme-toggle",
   ) as HTMLButtonElement;
 
-  themeToggle?.addEventListener("click", (event) => {
-    const currentTheme = getTheme();
-    const newTheme = currentTheme === "light" ? "dark" : "light";
-    saveTheme(newTheme);
-  });
+  const setAriaLabel = (theme: string) => {
+    themeToggle?.setAttribute(
+      "aria-label",
+      theme === "light" ? "Switch to dark theme" : "Switch to light theme",
+    );
+  };
 
-  themeToggle?.addEventListener("keydown", (e) => {
-    if (e.key === " " || e.key === "Enter") {
-      e.preventDefault();
-      themeToggle.click();
+  setAriaLabel(getTheme());
+
+  themeToggle?.addEventListener("click", () => {
+    const nextTheme = getTheme() === "light" ? "dark" : "light";
+    const applyTheme = () => {
+      saveTheme(nextTheme);
+      setAriaLabel(nextTheme);
+    };
+
+    const reduceMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
+
+    if (!document.startViewTransition || reduceMotion) {
+      applyTheme();
+      return;
     }
+
+    const rect = themeToggle.getBoundingClientRect();
+    const x = rect.left + rect.width / 2;
+    const y = rect.top + rect.height / 2;
+
+    const transition = document.startViewTransition(applyTheme);
+
+    transition.ready
+      .then(() => {
+        const radius = Math.hypot(
+          Math.max(x, window.innerWidth - x),
+          Math.max(y, window.innerHeight - y),
+        );
+
+        document.documentElement.animate(
+          {
+            clipPath: [
+              `circle(0px at ${x}px ${y}px)`,
+              `circle(${radius}px at ${x}px ${y}px)`,
+            ],
+          },
+          {
+            duration: 650,
+            easing: "cubic-bezier(0.22, 1, 0.36, 1)",
+            pseudoElement: "::view-transition-new(root)",
+          },
+        );
+      })
+      .catch(() => {});
   });
 </script>

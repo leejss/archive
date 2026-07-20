@@ -71,6 +71,26 @@ a:hover {
   color: var(--default-bg-color);
 }
 
+/* Theme reveal (View Transitions API): disable the default root crossfade
+   so the new theme can be revealed via a clip-path circle animation. */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
+::view-transition-old(root) {
+  z-index: 1;
+}
+
+::view-transition-new(root) {
+  z-index: 2147483646;
+}
+
+::view-transition-group(theme-orb) {
+  animation-duration: 0.65s;
+}
+
 .section-divider {
   color: var(--default-muted-color);
   margin: 2rem 0;
