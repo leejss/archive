@@ -1,6 +1,7 @@
 // @ts-check
 import { SITE } from "./src/config";
 import { defineConfig } from "astro/config";
+import { unified } from "@astrojs/markdown-remark";
 import mermaid from "astro-mermaid";
 import remarkMath from "remark-math";
 import rehypeKatex from "rehype-katex";
@@ -17,8 +18,10 @@ export default defineConfig({
   },
 
   markdown: {
-    remarkPlugins: [remarkMath],
-    rehypePlugins: [rehypeKatex],
+    processor: unified({
+      remarkPlugins: [remarkMath],
+      rehypePlugins: [rehypeKatex],
+    }),
     shikiConfig: {
       theme: "kanagawa-dragon",
       wrap: true,
