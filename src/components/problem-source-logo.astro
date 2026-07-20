@@ -1,0 +1,42 @@
+---
+interface Props {
+  source: string;
+}
+
+const { source } = Astro.props;
+const normalizedSource = source.trim().toLowerCase();
+---
+
+{
+  normalizedSource === "leetcode" ? (
+    <img
+      class="source-logo leetcode-logo"
+      src="/logos/leetcode.svg"
+      alt="LeetCode"
+      width="16"
+      height="16"
+    />
+  ) : (
+    <span class="source-label">[{source}]</span>
+  )
+}
+
+<style>
+  .source-logo,
+  .source-label {
+    margin-right: 0.35rem;
+  }
+
+  .source-logo {
+    display: inline-block;
+    height: 1rem;
+    vertical-align: -0.15em;
+    width: 1rem;
+  }
+
+  .source-label {
+    color: var(--default-muted-color);
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+  }
+</style>

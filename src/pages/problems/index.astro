@@ -1,8 +1,9 @@
 ---
 import { getCollection } from "astro:content";
+import ProblemSourceLogo from "@/components/problem-source-logo.astro";
 import Root from "@/layout/root.astro";
 
-const notes = (await getCollection("note")).sort(
+const problems = (await getCollection("problem")).sort(
   (a, b) =>
     new Date(b.data.publishedAt).getTime() -
     new Date(a.data.publishedAt).getTime(),
@@ -16,16 +17,17 @@ function dateCode(date: Date) {
 }
 ---
 
-<Root title="">
+<Root title="Problems">
   <main class="container">
-    <ul class="post-list" aria-label="Notes">
-      {notes.map((post) => (
+    <ul class="post-list" aria-label="Problems">
+      {problems.map((problem) => (
         <li class="post-item">
-          <time datetime={post.data.publishedAt.toISOString()} class="post-date">
-            {`[${dateCode(post.data.publishedAt)}]`}
+          <time datetime={problem.data.publishedAt.toISOString()} class="post-date">
+            {`[${dateCode(problem.data.publishedAt)}]`}
           </time>
-          <a href={`/notes/${post.id}`} class="post-link">
-            {post.data.title}
+          <a href={`/problems/${problem.id}`} class="post-link">
+            <ProblemSourceLogo source={problem.data.source} />
+            {problem.data.title}
           </a>
         </li>
       ))}
@@ -34,28 +36,27 @@ function dateCode(date: Date) {
 </Root>
 
 <style>
-  .post-item {
-    font-size: 1rem;
-  }
-
   .post-date {
-    font-size: 0.8rem;
     color: var(--default-muted-color);
+    display: inline-block;
     font-family: var(--font-mono);
+    font-size: 0.8rem;
+    width: 9ch;
   }
 
   .post-list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
     display: grid;
     gap: 0.7rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
   }
 
   .post-item {
     align-items: baseline;
     column-gap: 0.8rem;
     display: grid;
+    font-size: 1rem;
     grid-template-columns: 9ch minmax(0, 1fr);
   }
 
@@ -70,8 +71,4 @@ function dateCode(date: Date) {
     outline-offset: 0.2rem;
   }
 
-  .post-date {
-    display: inline-block;
-    width: 9ch;
-  }
 </style>

@@ -60,7 +60,6 @@ a {
   text-underline-offset: 0.16em;
 }
 
-
 a:hover {
   color: var(--default-text-color);
   text-decoration: underline;
@@ -73,7 +72,7 @@ a:hover {
 
 /* Theme reveal (View Transitions API): disable the default root crossfade
    so the new theme can be revealed via a clip-path circle animation. */
-::view-transition-old(root),
+/* ::view-transition-old(root),
 ::view-transition-new(root) {
   animation: none;
   mix-blend-mode: normal;
@@ -94,4 +93,4 @@ a:hover {
 .section-divider {
   color: var(--default-muted-color);
   margin: 2rem 0;
-}
+} */

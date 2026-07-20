@@ -7,13 +7,17 @@ const __dirname = dirname(__filename);
 
 /**
  * 명령어 인자를 파싱합니다
- * 예: node create-post.js next-middleware --tags=nextjs,javascript
+ * 예: node create-post.js notes next-middleware --tags=nextjs,javascript
  */
 function parseArgs() {
-  const args = process.argv.slice(2);
+  const collection = process.argv[2];
+  const args = process.argv.slice(3);
 
-  if (args.length === 0) {
-    console.error("Usage: npm run post:new <filename> [--tags=tag1,tag2,...]");
+  if (!["notes", "problems"].includes(collection) || args.length === 0) {
+    console.error(
+      "Usage: npm run post:new <filename> [--tags=tag1,tag2,...]\n" +
+        "       npm run problem:new <filename> --source=<source> --url=<problem-url> [--tags=tag1,tag2,...]",
+    );
     process.exit(1);
   }
 
@@ -27,7 +31,26 @@ function parseArgs() {
     tags = tagsValue ? tagsValue.split(",").map((tag) => tag.trim()) : [];
   }
 
-  return { filename, tags };
+  const sourceArg = args.find((arg) => arg.startsWith("--source="));
+  const source = sourceArg?.slice("--source=".length).trim();
+  const urlArg = args.find((arg) => arg.startsWith("--url="));
+  const url = urlArg?.slice("--url=".length).trim();
+
+  if (collection === "problems" && !source) {
+    console.error("❌ --source is required for problem posts.");
+    process.exit(1);
+  }
+
+  if (collection === "problems") {
+    try {
+      new URL(url);
+    } catch {
+      console.error("❌ A valid --url is required for problem posts.");
+      process.exit(1);
+    }
+  }
+
+  return { collection, filename, source, tags, url };
 }
 
 /**
@@ -53,35 +76,17 @@ function getCurrentDate() {
 }
 
 /**
- * frontmatter와 기본 내용을 포함한 마크다운 템플릿을 생성합니다
- */
-function createPostTemplate(title, tags, publishedAt) {
-  const tagsYaml =
-    tags.length > 0 ? tags.map((tag) => `  - ${tag}`).join("\n") : "";
-
-  const tagsSection = tags.length > 0 ? `tags:\n${tagsYaml}` : "tags: []";
-
-  return `---
-title: ${title}
-publishedAt: ${publishedAt}
-${tagsSection}
----
-Write your content here...
-`;
-}
-
-/**
  * 새로운 포스트 파일을 생성합니다
  */
 function createPost() {
-  const { filename, tags } = parseArgs();
+  const { collection, filename, source, tags, url } = parseArgs();
 
   // 파일명에 .md 확장자가 없으면 추가
   const fullFilename = filename.endsWith(".md") ? filename : `${filename}.md`;
 
   // 파일 경로
-  const notesDir = join(__dirname, "..", "src", "content", "notes");
-  const filePath = join(notesDir, fullFilename);
+  const contentDir = join(__dirname, "..", "src", "content", collection);
+  const filePath = join(contentDir, fullFilename);
 
   // 파일이 이미 존재하는지 확인
   if (existsSync(filePath)) {
@@ -96,6 +101,13 @@ function createPost() {
   // $publishedAt을 현재 날짜로 치환
   const publishedAt = getCurrentDate();
   content = content.replace("$publishedAt", publishedAt);
+
+  if (collection === "problems") {
+    content = content.replace(
+      `publishedAt: ${publishedAt}`,
+      `publishedAt: ${publishedAt}\nsource: ${JSON.stringify(source)}\nurl: ${JSON.stringify(url)}`,
+    );
+  }
 
   // 제목 생성 (확장자 제거 후 변환)
   const baseFilename = filename.replace(/\.md$/, "");
@@ -115,10 +127,14 @@ function createPost() {
     console.log(`✅ Created new post: ${fullFilename}`);
     console.log(`📝 Title: ${title}`);
     console.log(`📅 Published at: ${publishedAt}`);
+    if (source) {
+      console.log(`🔗 Source: ${source}`);
+      console.log(`🌐 URL: ${url}`);
+    }
     if (tags.length > 0) {
       console.log(`🏷️  Tags: ${tags.join(", ")}`);
     }
-    console.log(`📍 Location: src/content/notes/${fullFilename}`);
+    console.log(`📍 Location: src/content/${collection}/${fullFilename}`);
   } catch (error) {
     console.error(`❌ Error creating file: ${error.message}`);
     process.exit(1);
