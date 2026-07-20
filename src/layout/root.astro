@@ -72,10 +72,8 @@ const getTitle = () => {
         <div class="nav-links">
           <a href="/" class="nav-link">WRITINGS</a>
           <!-- <a href="/projects" class="nav-link">PROJECTS</a> -->
+          <ThemeSetting />
         </div>
-      </div>
-      <div class="theme-slot">
-        <ThemeSetting />
       </div>
     </nav>
     {
@@ -92,17 +90,8 @@ const getTitle = () => {
 
 <style>
   .site-navigation {
-    position: relative;
     padding: 2.5rem 0 0;
     box-sizing: border-box;
-  }
-
-  /* 우측 상단 고정 — WRITINGS 링크와 수직 중앙 정렬 */
-  .theme-slot {
-    position: absolute;
-    top: 1.9rem;
-    right: max(1rem, env(safe-area-inset-right, 0px));
-    display: flex;
   }
 
   .nav-content {
@@ -144,11 +133,6 @@ const getTitle = () => {
   @media (max-width: 640px) {
     .site-navigation {
       padding-top: 1.25rem;
-    }
-
-    .theme-slot {
-      top: 0.6rem;
-      right: max(0.75rem, env(safe-area-inset-right, 0px));
     }
 
     .nav-link {
