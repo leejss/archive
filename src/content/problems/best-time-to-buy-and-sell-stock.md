@@ -1,5 +1,5 @@
 ---
-title: Container With Most Water
+title: Best Time to Buy and Sell Stock
 publishedAt: 2026-08-03
 source: "leetcode"
 url: "https://leetcode.com/problems/best-time-to-buy-and-sell-stock/description/"
