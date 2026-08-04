@@ -5,6 +5,7 @@ import { unified } from "@astrojs/markdown-remark";
 import mermaid from "astro-mermaid";
 import remarkMath from "remark-math";
 import rehypeKatex from "rehype-katex";
+import sitemap from "@astrojs/sitemap";
 
 // https://astro.build/config
 export default defineConfig({
@@ -29,6 +30,7 @@ export default defineConfig({
   },
 
   integrations: [
+    sitemap(),
     mermaid({
       theme: "forest",
       autoTheme: true,
