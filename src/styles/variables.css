@@ -1,19 +1,25 @@
 :root {
-  --default-text-color: #efefef;
-  --default-bg-color: #050505;
-  --default-muted-color: #9b9b9b;
-  --default-link-color: #a9a7ff;
-  --default-border-color: #242424;
-  --default-border-hover-color: #5f5f5f;
-  --default-shadow-color: #000;
+  --default-text-color: oklch(86.02% 0.032 81.78);
+  --default-bg-color: oklch(11.49% 0.006 78);
+  --default-muted-color: oklch(68.95% 0.012 82);
+  --default-link-color: oklch(75.2% 0.072 308.28);
+  --default-visited-link-color: oklch(59.87% 0.052 311.54);
+  --default-code-color: oklch(74.34% 0.11 79.86);
+  --default-code-block-bg-color: oklch(15.43% 0.006 78);
+  --default-border-color: oklch(26.03% 0.007 80);
+  --default-border-hover-color: oklch(48.55% 0.012 80);
+  --default-shadow-color: oklch(0% 0 0);
 }
 
 [data-theme="light"] {
-  --default-text-color: #101010;
-  --default-bg-color: #f6f4ee;
-  --default-muted-color: #67645d;
-  --default-link-color: #3c3ab8;
-  --default-border-color: #d8d3c7;
-  --default-border-hover-color: #8a8579;
-  --default-shadow-color: #ddd6c8;
+  --default-text-color: oklch(17.3% 0.008 80);
+  --default-bg-color: oklch(96.7% 0.016 91.48);
+  --default-muted-color: oklch(50.38% 0.022 87.52);
+  --default-link-color: oklch(45.24% 0.095 306.1);
+  --default-visited-link-color: oklch(52.66% 0.06 315.58);
+  --default-code-color: oklch(46.32% 0.098 70.33);
+  --default-code-block-bg-color: oklch(93.14% 0.024 88.69);
+  --default-border-color: oklch(86.75% 0.029 88.01);
+  --default-border-hover-color: oklch(61.75% 0.032 88.05);
+  --default-shadow-color: oklch(87.78% 0.034 84.59);
 }

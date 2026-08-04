@@ -1,8 +1,10 @@
 .markdown-content {
   color: var(--default-text-color);
   font-size: 1rem;
+  line-break: strict;
   line-height: 1.65;
-  overflow-wrap: anywhere;
+  overflow-wrap: break-word;
+  word-break: keep-all;
 }
 
 .markdown-content > * + * {
@@ -20,6 +22,7 @@
   line-height: 1.35;
   max-width: 76ch;
   scroll-margin-top: 2rem;
+  text-wrap: balance;
 }
 
 .markdown-content h1 {
@@ -45,7 +48,7 @@
 }
 
 .markdown-content h5 {
-  color: color-mix(in srgb, var(--default-text-color) 88%, var(--default-muted-color));
+  color: color-mix(in oklch, var(--default-text-color) 88%, var(--default-muted-color));
   font-size: 1rem;
   margin-top: 1.55rem;
 }
@@ -77,6 +80,7 @@
 
 .markdown-content p {
   max-width: 76ch;
+  text-wrap: pretty;
 }
 
 .markdown-content a {
@@ -98,39 +102,64 @@
   margin-top: 0.35rem;
 }
 
+.markdown-content li {
+  text-wrap: pretty;
+}
+
 .markdown-content code,
 .markdown-content pre {
   font-family: var(--font-mono);
 }
 
 .markdown-content :not(pre) > code {
-  background: color-mix(in srgb, var(--default-border-color) 55%, transparent);
-  border: 1px solid color-mix(in srgb, #39ff14 42%, var(--default-border-color));
+  background: color-mix(
+    in oklch,
+    var(--default-code-color) 10%,
+    var(--default-bg-color)
+  );
+  border: 1px solid
+    color-mix(
+      in oklch,
+      var(--default-code-color) 32%,
+      var(--default-border-color)
+    );
   border-radius: 4px;
-  box-shadow: 0 0 0 1px color-mix(in srgb, #39ff14 12%, transparent);
-  color: #39ff14;
+  box-shadow: 0 0 0 1px
+    color-mix(in oklch, var(--default-code-color) 8%, transparent);
+  color: var(--default-code-color);
   font-size: 0.9em;
   line-height: 1;
   padding: 0.12rem 0.32rem;
   white-space: break-spaces;
 }
 
-[data-theme="light"] .markdown-content :not(pre) > code {
-  background: color-mix(in srgb, #39ff14 10%, var(--default-bg-color));
-  border-color: color-mix(in srgb, #00c853 36%, var(--default-border-color));
-  box-shadow: 0 0 0 1px color-mix(in srgb, #00c853 10%, transparent);
-  color: #008f3a;
-}
-
 .markdown-content pre {
-  background: #0c0c0c;
   border: 1px solid var(--default-border-color);
   overflow-x: auto;
+  overflow-wrap: normal;
   padding: 1rem;
+  word-break: normal;
 }
 
-[data-theme="light"] .markdown-content pre {
-  background: #ece8de;
+.markdown-content pre:not(.astro-code) {
+  background: var(--default-code-block-bg-color);
+}
+
+[data-theme="dark"]
+  .markdown-content
+  .astro-code[style*="--shiki-dark-bg"] {
+  background-color: var(--shiki-dark-bg) !important;
+  color: var(--shiki-dark) !important;
+}
+
+[data-theme="dark"]
+  .markdown-content
+  .astro-code
+  span[style*="--shiki-dark:"] {
+  color: var(--shiki-dark) !important;
+  font-style: var(--shiki-dark-font-style) !important;
+  font-weight: var(--shiki-dark-font-weight) !important;
+  text-decoration: var(--shiki-dark-text-decoration) !important;
 }
 
 .markdown-content pre code {

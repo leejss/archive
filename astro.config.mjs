@@ -24,7 +24,11 @@ export default defineConfig({
       rehypePlugins: [rehypeKatex],
     }),
     shikiConfig: {
-      theme: "kanagawa-dragon",
+      themes: {
+        light: "github-light",
+        dark: "kanagawa-dragon",
+      },
+      defaultColor: "light",
       wrap: true,
     },
   },
