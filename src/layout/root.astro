@@ -1,53 +1,53 @@
 ---
 import { SITE } from "@/config";
 import "../styles/globals.css";
-import ThemeSetting from "@/components/theme-setting.astro";
+import MetaHead from "@/components/meta-head.astro";
+import SiteSidebar from "@/components/site-sidebar.astro";
+import SiteFooter from "@/components/site-footer.astro";
 
 interface Props {
   title?: string;
+  description?: string;
+  canonicalURL?: URL | string;
+  type?: "website" | "article";
+  image?: string;
+  publishedAt?: Date;
+  tags?: string[];
   useSlotContainer?: boolean;
 }
 
-const { title, useSlotContainer = true } = Astro.props;
-const getTitle = () => {
-  if (title) {
-    return `${SITE.title} | ${title}`;
-  }
-  return SITE.title;
-};
+const {
+  title,
+  description,
+  canonicalURL,
+  type,
+  image,
+  publishedAt,
+  tags,
+  useSlotContainer = true,
+} = Astro.props;
+
+const currentPath = Astro.url.pathname;
 ---
 
 <html lang={SITE.defaultLanguage}>
   <head>
-    <meta charset="utf-8" />
+    <MetaHead
+      title={title}
+      description={description}
+      canonicalURL={canonicalURL}
+      type={type}
+      image={image}
+      publishedAt={publishedAt}
+      tags={tags}
+    />
     <link rel="icon" type="image/png" href="/favicon.png" />
-    <meta name="viewport" content="width=device-width" />
-    <meta name="generator" content={Astro.generator} />
-    <meta name="description" content={SITE.description} />
-    <meta name="author" content={SITE.author} />
-
-    <!-- Open Graph / Facebook -->
-    <meta property="og:type" content="website" />
-    <meta property="og:url" content={SITE.baseURL} />
-    <meta property="og:title" content={getTitle()} />
-    <meta property="og:description" content={SITE.description} />
-    <meta property="og:image" content={`${SITE.baseURL}/og-image.png`} />
-    <meta property="og:locale" content={SITE.defaultLanguage} />
-    <meta property="og:site_name" content={SITE.title} />
-
-    <!-- Twitter -->
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:url" content={SITE.baseURL} />
-    <meta name="twitter:title" content={getTitle()} />
-    <meta name="twitter:description" content={SITE.description} />
-    <meta name="twitter:image" content={`${SITE.baseURL}/og-image.png`} />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
       rel="stylesheet"
       href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans+KR:wght@400;500;600;700&display=swap"
     />
-    <title>{getTitle()}</title>
     <link
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/katex@0.16.22/dist/katex.min.css"
@@ -56,88 +56,37 @@ const getTitle = () => {
     />
     <script is:inline>
       (function () {
-        function getInitialTheme() {
-          const savedTheme = localStorage.getItem("blog-theme");
-          return savedTheme || "dark";
+        let savedTheme;
+
+        try {
+          savedTheme = localStorage.getItem("blog-theme");
+        } catch {
+          savedTheme = null;
         }
-        const theme = getInitialTheme();
+
+        const theme = savedTheme === "light" || savedTheme === "dark"
+          ? savedTheme
+          : "dark";
+
         document.documentElement.setAttribute("data-theme", theme);
       })();
     </script>
   </head>
   <body>
-    <nav class="site-navigation" aria-label="Primary">
-      <div class="nav-content">
-        <!-- <a href="/" class="site-title">{SITE.title}</a> -->
-        <div class="nav-links">
-          <a href="/" class="nav-link">Posts</a>
-          <a href="/problems" class="nav-link">Problems</a>
-          <!-- <a href="/projects" class="nav-link">PROJECTS</a> -->
-          <ThemeSetting />
-        </div>
+    <div class="archive-page-grid">
+      <SiteSidebar currentPath={currentPath} />
+      <div class="archive-site-content">
+        {
+          useSlotContainer ? (
+            <div class="archive-slot-container">
+              <slot />
+            </div>
+          ) : (
+            <slot />
+          )
+        }
+        <SiteFooter />
       </div>
-    </nav>
-    {
-      useSlotContainer ? (
-        <div class="slot-container">
-          <slot />
-        </div>
-      ) : (
-        <slot />
-      )
-    }
+    </div>
   </body>
 </html>
-
-<style>
-  .site-navigation {
-    padding: 2.5rem 0 0;
-    box-sizing: border-box;
-  }
-
-  .nav-content {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 1rem;
-    width: min(100% - 2rem, 82ch);
-    margin-left: clamp(1rem, 5%, 3rem);
-    margin-right: auto;
-  }
-
-  .nav-links {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 0.85rem;
-  }
-
-  .site-title,
-  .nav-link {
-    display: inline-flex;
-    align-items: baseline;
-    color: var(--default-text-color);
-    text-decoration: none;
-    font-weight: 700;
-    font-size: 1rem;
-  }
-
-  .site-title:hover,
-  .nav-link:hover {
-    color: var(--default-link-color);
-  }
-
-  .slot-container {
-    min-height: 100vh;
-  }
-
-  @media (max-width: 640px) {
-    .site-navigation {
-      padding-top: 1.25rem;
-    }
-
-    .nav-link {
-      font-size: 0.95rem;
-    }
-  }
-</style>

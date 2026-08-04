@@ -1,80 +1,27 @@
 ---
-import { getCollection, render } from "astro:content";
-import Root from "@/layout/root.astro";
+import { render } from "astro:content";
+import PostLayout from "@/layout/post.astro";
+import { getPublishedNotes } from "@/lib/content";
 
 export async function getStaticPaths() {
-  const notes = await getCollection("note");
-  const paths = notes.map((post) => ({
+  const notes = await getPublishedNotes();
+  return notes.map((post) => ({
     params: { id: post.id },
     props: { post },
   }));
-  return paths;
 }
 const { post } = Astro.props;
-const { Content } = await render(post);
-const { title, publishedAt } = post.data;
-const tags = post.data.tags ?? [];
-
-function dateCode(date: Date) {
-  const yyyy = date.getFullYear();
-  const mm = String(date.getMonth() + 1).padStart(2, "0");
-  const dd = String(date.getDate()).padStart(2, "0");
-  return `${yyyy}${mm}${dd}`;
-}
+const { Content, headings } = await render(post);
+const { title, description, publishedAt, tags, aiGenerated } = post.data;
 ---
 
-<Root title={title}>
-  <article class="container">
-    <!-- <a class="back-link" href="/">Notes</a> -->
-    <header class="note-header">
-      <h1 class="title">{title}</h1>
-      <div class="meta">
-      {
-        publishedAt && (
-          <span>
-            <time datetime={publishedAt.toISOString()}>{dateCode(publishedAt)}</time>
-          </span>
-        )
-      }
-      {
-        (tags.length > 0 || post.data.aiGenerated) && (
-          <span>{[post.data.aiGenerated ? "AI" : "", ...tags].filter(Boolean).join(" · ")}</span>
-        )
-      }
-      </div>
-    </header>
-    <div class="markdown-content">
-      <Content />
-    </div>
-  </article>
-</Root>
-
-<style>
-  .back-link {
-    display: inline-block;
-    margin-top: 1.75rem;
-    font-weight: 700;
-  }
-
-  .note-header {
-    display: grid;
-    gap: 0.8rem;
-    padding-bottom: 2.25rem;
-  }
-
-  .note-header .title {
-    color: var(--default-text-color);
-    font-size: 1.85rem;
-    font-weight: 700;
-    line-height: 1.25;
-    max-width: 76ch;
-  }
-
-  .meta {
-    color: var(--default-muted-color);
-    display: flex;
-    font-family: var(--font-mono);
-    flex-wrap: wrap;
-    gap: 0.5rem 1rem;
-  }
-</style>
+<PostLayout
+  title={title}
+  description={description}
+  publishedAt={publishedAt}
+  tags={tags}
+  aiGenerated={aiGenerated}
+  headings={headings}
+>
+  <Content />
+</PostLayout>

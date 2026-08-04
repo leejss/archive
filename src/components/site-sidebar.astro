@@ -1,0 +1,37 @@
+---
+import { SITE } from "@/config";
+import ThemeSetting from "@/components/theme-setting.astro";
+
+interface Props {
+  currentPath: string;
+}
+
+const { currentPath } = Astro.props;
+const isPostsPage = currentPath === "/" || currentPath.startsWith("/notes/");
+const isProblemsPage = currentPath.startsWith("/problems");
+---
+
+<aside class="archive-sidebar">
+  <a href="/" class="archive-site-title">{SITE.title}</a>
+
+  <nav class="archive-menu" aria-label="Primary">
+    <a
+      href="/"
+      class="archive-menu-link"
+      aria-current={isPostsPage ? "page" : undefined}
+    >
+      Posts
+    </a>
+    <a
+      href="/problems"
+      class="archive-menu-link"
+      aria-current={isProblemsPage ? "page" : undefined}
+    >
+      Problems
+    </a>
+  </nav>
+
+  <div class="archive-sidebar-actions">
+    <ThemeSetting />
+  </div>
+</aside>

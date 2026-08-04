@@ -1,9 +1,10 @@
 ---
-import { getCollection, render } from "astro:content";
-import Root from "@/layout/root.astro";
+import { render } from "astro:content";
+import PostLayout from "@/layout/post.astro";
+import { getPublishedProblems } from "@/lib/content";
 
 export async function getStaticPaths() {
-  const problems = await getCollection("problem");
+  const problems = await getPublishedProblems();
   return problems.map((problem) => ({
     params: { id: problem.id },
     props: { problem },
@@ -11,64 +12,26 @@ export async function getStaticPaths() {
 }
 
 const { problem } = Astro.props;
-const { Content } = await render(problem);
-const { title, publishedAt, source, url } = problem.data;
-const tags = problem.data.tags ?? [];
-
-function dateCode(date: Date) {
-  const yyyy = date.getFullYear();
-  const mm = String(date.getMonth() + 1).padStart(2, "0");
-  const dd = String(date.getDate()).padStart(2, "0");
-  return `${yyyy}${mm}${dd}`;
-}
+const { Content, headings } = await render(problem);
+const {
+  title,
+  description,
+  publishedAt,
+  source,
+  url,
+  tags,
+  aiGenerated,
+} = problem.data;
 ---
 
-<Root title={title}>
-  <article class="container">
-    <header class="problem-header">
-      <h1 class="title">{title}</h1>
-      <div class="meta">
-        {publishedAt && (
-          <span>
-            <time datetime={publishedAt.toISOString()}>{dateCode(publishedAt)}</time>
-          </span>
-        )}
-        <a href={url} target="_blank" rel="noreferrer">{source}</a>
-        {(tags.length > 0 || problem.data.aiGenerated) && (
-          <span>
-            {[problem.data.aiGenerated ? "AI" : "", ...tags]
-              .filter(Boolean)
-              .join(" · ")}
-          </span>
-        )}
-      </div>
-    </header>
-    <div class="markdown-content">
-      <Content />
-    </div>
-  </article>
-</Root>
-
-<style>
-  .problem-header {
-    display: grid;
-    gap: 0.8rem;
-    padding-bottom: 2.25rem;
-  }
-
-  .problem-header .title {
-    color: var(--default-text-color);
-    font-size: 1.85rem;
-    font-weight: 700;
-    line-height: 1.25;
-    max-width: 76ch;
-  }
-
-  .meta {
-    color: var(--default-muted-color);
-    display: flex;
-    flex-wrap: wrap;
-    font-family: var(--font-mono);
-    gap: 0.5rem 1rem;
-  }
-</style>
+<PostLayout
+  title={title}
+  description={description}
+  publishedAt={publishedAt}
+  tags={tags}
+  aiGenerated={aiGenerated}
+  headings={headings}
+>
+  <a slot="meta" href={url} target="_blank" rel="noopener noreferrer">{source}</a>
+  <Content />
+</PostLayout>

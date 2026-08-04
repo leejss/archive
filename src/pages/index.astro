@@ -1,19 +1,9 @@
 ---
-import { getCollection } from "astro:content";
 import Root from "@/layout/root.astro";
+import { getPublishedNotes } from "@/lib/content";
+import { formatDate } from "@/utils/common";
 
-const notes = (await getCollection("note")).sort(
-  (a, b) =>
-    new Date(b.data.publishedAt).getTime() -
-    new Date(a.data.publishedAt).getTime(),
-);
-
-function dateCode(date: Date) {
-  const yyyy = date.getFullYear();
-  const mm = String(date.getMonth() + 1).padStart(2, "0");
-  const dd = String(date.getDate()).padStart(2, "0");
-  return `${yyyy}${mm}${dd}`;
-}
+const notes = await getPublishedNotes();
 ---
 
 <Root title="">
@@ -21,12 +11,12 @@ function dateCode(date: Date) {
     <ul class="post-list" aria-label="Notes">
       {notes.map((post) => (
         <li class="post-item">
-          <time datetime={post.data.publishedAt.toISOString()} class="post-date">
-            {`[${dateCode(post.data.publishedAt)}]`}
-          </time>
           <a href={`/notes/${post.id}`} class="post-link">
             {post.data.title}
           </a>
+          <time datetime={post.data.publishedAt.toISOString()} class="post-date">
+            {formatDate(post.data.publishedAt)}
+          </time>
         </li>
       ))}
     </ul>
@@ -39,9 +29,12 @@ function dateCode(date: Date) {
   }
 
   .post-date {
+    display: inline-block;
     font-size: 0.8rem;
     color: var(--default-muted-color);
     font-family: var(--font-mono);
+    text-align: right;
+    white-space: nowrap;
   }
 
   .post-list {
@@ -56,7 +49,7 @@ function dateCode(date: Date) {
     align-items: baseline;
     column-gap: 0.8rem;
     display: grid;
-    grid-template-columns: 9ch minmax(0, 1fr);
+    grid-template-columns: minmax(0, 1fr) max-content;
   }
 
   .post-link {
@@ -70,8 +63,4 @@ function dateCode(date: Date) {
     outline-offset: 0.2rem;
   }
 
-  .post-date {
-    display: inline-block;
-    width: 9ch;
-  }
 </style>

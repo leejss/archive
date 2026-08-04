@@ -1,7 +1,7 @@
-export function formatPublishedAt(date: Date) {
-  return date.toLocaleDateString("ko-KR", {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  });
+export function formatDate(date: Date) {
+  const yyyy = date.getUTCFullYear();
+  const mm = String(date.getUTCMonth() + 1).padStart(2, "0");
+  const dd = String(date.getUTCDate()).padStart(2, "0");
+
+  return `${yyyy}-${mm}-${dd}`;
 }

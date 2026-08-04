@@ -1,6 +1,7 @@
 @import "./variables.css";
 @import "./reset.css";
 @import "./markdown.css";
+@import "./layout.css";
 
 :root {
   --font-sans: "IBM Plex Sans KR", system-ui, sans-serif;
@@ -47,9 +48,8 @@ samp {
 }
 
 .container {
-  width: min(100% - 2rem, 82ch);
-  margin-left: clamp(1rem, 5%, 3rem);
-  margin-right: auto;
+  width: min(100%, 76ch);
+  margin-inline: 0;
   padding: 2rem 0 5rem;
 }
 

@@ -1,0 +1,135 @@
+---
+import type { MarkdownHeading } from "astro";
+import Root from "@/layout/root.astro";
+import TableOfContents from "@/components/table-of-contents.astro";
+import { formatDate } from "@/utils/common";
+
+interface Props {
+  title: string;
+  description?: string;
+  publishedAt: Date;
+  tags?: string[];
+  aiGenerated?: boolean;
+  headings?: MarkdownHeading[];
+}
+
+const {
+  title,
+  description,
+  publishedAt,
+  tags = [],
+  aiGenerated = false,
+  headings = [],
+} = Astro.props;
+
+const tocHeadings = headings.filter(({ depth }) => depth === 2 || depth === 3);
+const hasTableOfContents = tocHeadings.length >= 3;
+const labels = [aiGenerated ? "AI" : "", ...tags].filter(Boolean);
+---
+
+<Root
+  title={title}
+  description={description}
+  type="article"
+  publishedAt={publishedAt}
+  tags={tags}
+>
+  <article
+    class:list={[
+      "post-container",
+      "container",
+      { "has-toc": hasTableOfContents },
+    ]}
+  >
+    <header class="post-header">
+      <h1 class="title">{title}</h1>
+      <time class="post-date" datetime={publishedAt.toISOString()}>
+        {formatDate(publishedAt)}
+      </time>
+      {
+        (Astro.slots.has("meta") || labels.length > 0) && (
+          <div class="meta">
+            {Astro.slots.has("meta") && <slot name="meta" />}
+            {labels.length > 0 && <span>{labels.join(" · ")}</span>}
+          </div>
+        )
+      }
+    </header>
+
+    <div class:list={["post-body", { "has-toc": hasTableOfContents }]}>
+      {hasTableOfContents && <TableOfContents headings={tocHeadings} />}
+      <div class="markdown-content">
+        <slot />
+      </div>
+    </div>
+  </article>
+</Root>
+
+<style>
+  .post-container.container {
+    width: min(100%, 76ch);
+  }
+
+  .post-header {
+    display: grid;
+    gap: 0.8rem;
+    max-width: 76ch;
+    padding-bottom: 2.25rem;
+  }
+
+  .post-header .title {
+    color: var(--default-text-color);
+    font-size: 1.85rem;
+    font-weight: 700;
+    line-height: 1.25;
+    max-width: 76ch;
+    text-wrap: balance;
+  }
+
+  .meta {
+    color: var(--default-muted-color);
+    display: flex;
+    flex-wrap: wrap;
+    font-family: var(--font-mono);
+    gap: 0.5rem 1rem;
+  }
+
+  .post-date {
+    color: var(--default-muted-color);
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    white-space: nowrap;
+  }
+
+  .post-body {
+    display: grid;
+    gap: 1.5rem;
+    grid-template-columns: minmax(0, 76ch);
+  }
+
+  .markdown-content {
+    min-width: 0;
+  }
+
+  @media (min-width: 72rem) {
+    .post-container.container.has-toc {
+      width: min(100%, calc(76ch + 19rem));
+    }
+
+    .post-body.has-toc {
+      align-items: start;
+      column-gap: 3rem;
+      grid-template-columns: minmax(0, 76ch) minmax(12rem, 16rem);
+    }
+
+    .post-body.has-toc :global(.table-of-contents) {
+      grid-column: 2;
+      grid-row: 1;
+    }
+
+    .post-body.has-toc .markdown-content {
+      grid-column: 1;
+      grid-row: 1;
+    }
+  }
+</style>
