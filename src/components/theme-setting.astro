@@ -25,7 +25,6 @@
     border-radius: 50%;
     background: transparent;
     cursor: pointer;
-    view-transition-name: theme-orb;
     -webkit-tap-highlight-color: transparent;
   }
 
@@ -217,47 +216,7 @@
 
   themeToggle?.addEventListener("click", () => {
     const nextTheme = getTheme() === "light" ? "dark" : "light";
-    const applyTheme = () => {
-      saveTheme(nextTheme);
-      setAriaLabel(nextTheme);
-    };
-
-    const reduceMotion = window.matchMedia(
-      "(prefers-reduced-motion: reduce)",
-    ).matches;
-
-    if (!document.startViewTransition || reduceMotion) {
-      applyTheme();
-      return;
-    }
-
-    const rect = themeToggle.getBoundingClientRect();
-    const x = rect.left + rect.width / 2;
-    const y = rect.top + rect.height / 2;
-
-    const transition = document.startViewTransition(applyTheme);
-
-    transition.ready
-      .then(() => {
-        const radius = Math.hypot(
-          Math.max(x, window.innerWidth - x),
-          Math.max(y, window.innerHeight - y),
-        );
-
-        document.documentElement.animate(
-          {
-            clipPath: [
-              `circle(0px at ${x}px ${y}px)`,
-              `circle(${radius}px at ${x}px ${y}px)`,
-            ],
-          },
-          {
-            duration: 650,
-            easing: "cubic-bezier(0.22, 1, 0.36, 1)",
-            pseudoElement: "::view-transition-new(root)",
-          },
-        );
-      })
-      .catch(() => {});
+    saveTheme(nextTheme);
+    setAriaLabel(nextTheme);
   });
 </script>

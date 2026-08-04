@@ -31,6 +31,52 @@ body {
   text-rendering: geometricPrecision;
 }
 
+html,
+body {
+  transition:
+    background-color 180ms ease,
+    color 180ms ease;
+}
+
+:where(
+  a,
+  time,
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6,
+  .meta,
+  .archive-site-title,
+  .archive-menu-link,
+  .archive-social-link,
+  .table-of-contents,
+  .markdown-content
+) {
+  transition: color 180ms ease;
+}
+
+:where(
+  .archive-sidebar,
+  .toc-mobile,
+  .markdown-content pre,
+  .markdown-content blockquote,
+  .markdown-content th,
+  .markdown-content td
+) {
+  transition: border-color 180ms ease;
+}
+
+.markdown-content :not(pre) > code,
+.markdown-content pre:not(.astro-code) {
+  transition:
+    background-color 180ms ease,
+    border-color 180ms ease,
+    box-shadow 180ms ease,
+    color 180ms ease;
+}
+
 h1,
 h2,
 h3,
@@ -65,32 +111,46 @@ a:hover {
   text-decoration: underline;
 }
 
+.post-list .post-link:visited {
+  color: var(--default-visited-link-color);
+}
+
+.post-list .post-link:visited:hover {
+  color: var(--default-text-color);
+}
+
 ::selection {
   background: var(--default-text-color);
   color: var(--default-bg-color);
 }
 
-/* Theme reveal (View Transitions API): disable the default root crossfade
-   so the new theme can be revealed via a clip-path circle animation. */
-/* ::view-transition-old(root),
-::view-transition-new(root) {
-  animation: none;
-  mix-blend-mode: normal;
+@media (prefers-reduced-motion: reduce) {
+  :where(
+    html,
+    body,
+    a,
+    time,
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6,
+    .meta,
+    .archive-site-title,
+    .archive-menu-link,
+    .archive-social-link,
+    .table-of-contents,
+    .markdown-content,
+    .archive-sidebar,
+    .toc-mobile,
+    .markdown-content pre,
+    .markdown-content blockquote,
+    .markdown-content th,
+    .markdown-content td,
+    .markdown-content :not(pre) > code,
+    .markdown-content pre:not(.astro-code)
+  ) {
+    transition: none !important;
+  }
 }
-
-::view-transition-old(root) {
-  z-index: 1;
-}
-
-::view-transition-new(root) {
-  z-index: 2147483646;
-}
-
-::view-transition-group(theme-orb) {
-  animation-duration: 0.65s;
-}
-
-.section-divider {
-  color: var(--default-muted-color);
-  margin: 2rem 0;
-} */
