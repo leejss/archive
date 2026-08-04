@@ -1,5 +1,5 @@
 import { writeFileSync, existsSync, readFileSync } from "fs";
-import { join, dirname } from "path";
+import { join, dirname, isAbsolute, relative, resolve } from "path";
 import { fileURLToPath } from "url";
 
 const __filename = fileURLToPath(import.meta.url);
@@ -7,7 +7,7 @@ const __dirname = dirname(__filename);
 
 /**
  * 명령어 인자를 파싱합니다
- * 예: node create-post.js notes next-middleware --tags=nextjs,javascript
+ * 예: node create-post.js notes next-middleware --description="..." --tags=nextjs,javascript
  */
 function parseArgs() {
   const collection = process.argv[2];
@@ -15,21 +15,37 @@ function parseArgs() {
 
   if (!["notes", "problems"].includes(collection) || args.length === 0) {
     console.error(
-      "Usage: npm run post:new <filename> [--tags=tag1,tag2,...]\n" +
-        "       npm run problem:new <filename> --source=<source> --url=<problem-url> [--tags=tag1,tag2,...]",
+      "Usage: npm run post:new <filename> [--description=...] [--tags=tag1,tag2,...]\n" +
+        "       npm run problem:new <filename> --source=<source> --url=<problem-url> [--description=...] [--tags=tag1,tag2,...]",
     );
     process.exit(1);
   }
 
-  const filename = args[0];
+  const filename = args[0].replace(/\.md$/, "");
+
+  if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(filename)) {
+    console.error("❌ Filename must be a lowercase kebab-case slug.");
+    process.exit(1);
+  }
+
   let tags = [];
 
   // --tags 옵션 파싱
   const tagsArg = args.find((arg) => arg.startsWith("--tags="));
   if (tagsArg) {
     const tagsValue = tagsArg.split("=")[1];
-    tags = tagsValue ? tagsValue.split(",").map((tag) => tag.trim()) : [];
+    tags = tagsValue
+      ? tagsValue
+          .split(",")
+          .map((tag) => tag.trim().toLowerCase().replace(/\s+/g, "-"))
+          .filter(Boolean)
+      : [];
   }
+
+  const descriptionArg = args.find((arg) => arg.startsWith("--description="));
+  const description = descriptionArg
+    ?.slice("--description=".length)
+    .trim();
 
   const sourceArg = args.find((arg) => arg.startsWith("--source="));
   const source = sourceArg?.slice("--source=".length).trim();
@@ -50,7 +66,7 @@ function parseArgs() {
     }
   }
 
-  return { collection, filename, source, tags, url };
+  return { collection, description, filename, source, tags, url };
 }
 
 /**
@@ -79,14 +95,20 @@ function getCurrentDate() {
  * 새로운 포스트 파일을 생성합니다
  */
 function createPost() {
-  const { collection, filename, source, tags, url } = parseArgs();
+  const { collection, description, filename, source, tags, url } = parseArgs();
 
   // 파일명에 .md 확장자가 없으면 추가
-  const fullFilename = filename.endsWith(".md") ? filename : `${filename}.md`;
+  const fullFilename = `${filename}.md`;
 
   // 파일 경로
   const contentDir = join(__dirname, "..", "src", "content", collection);
-  const filePath = join(contentDir, fullFilename);
+  const filePath = resolve(contentDir, fullFilename);
+  const relativePath = relative(contentDir, filePath);
+
+  if (relativePath.startsWith("..") || isAbsolute(relativePath)) {
+    console.error("❌ File path must stay inside its content collection.");
+    process.exit(1);
+  }
 
   // 파일이 이미 존재하는지 확인
   if (existsSync(filePath)) {
@@ -97,6 +119,11 @@ function createPost() {
   // 템플릿 파일 읽기 및 처리
   const templateFilePath = join(__dirname, "template.md");
   let content = readFileSync(templateFilePath, "utf8");
+
+  content = content.replace(
+    "$description",
+    description ? `description: ${JSON.stringify(description)}` : "",
+  );
 
   // $publishedAt을 현재 날짜로 치환
   const publishedAt = getCurrentDate();
@@ -110,8 +137,7 @@ function createPost() {
   }
 
   // 제목 생성 (확장자 제거 후 변환)
-  const baseFilename = filename.replace(/\.md$/, "");
-  const title = kebabToTitleCase(baseFilename);
+  const title = kebabToTitleCase(filename);
   content = content.replace("Post title", title);
 
   // tags 처리

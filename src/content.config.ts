@@ -4,9 +4,10 @@ import { z } from "astro/zod";
 
 const postSchema = z.object({
 	title: z.string(),
+	description: z.string().trim().min(1).optional(),
 	draft: z.boolean().optional().default(false),
 	publishedAt: z.date(),
-	tags: z.array(z.string()).optional(),
+	tags: z.array(z.string().trim().min(1)).optional().default([]),
 	aiGenerated: z.boolean().optional().default(false),
 });
 
