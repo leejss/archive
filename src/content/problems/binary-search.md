@@ -1,5 +1,5 @@
 ---
-title: 704. Binary Search
+title: Binary Search
 publishedAt: 2026-08-11
 source: "leetcode"
 url: "https://leetcode.com/problems/binary-search/description/"
