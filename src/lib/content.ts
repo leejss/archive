@@ -4,12 +4,12 @@ type PublishableEntry =
   | CollectionEntry<"note">
   | CollectionEntry<"problem">;
 
-export function isPublished(entry: PublishableEntry, now = new Date()) {
+export function isPublished(entry: PublishableEntry) {
   if (import.meta.env.DEV) {
     return true;
   }
 
-  return !entry.data.draft && entry.data.publishedAt.getTime() <= now.getTime();
+  return !entry.data.draft;
 }
 
 export function byPublishedAtDescending(
@@ -20,17 +20,13 @@ export function byPublishedAtDescending(
 }
 
 export async function getPublishedNotes() {
-  const now = new Date();
-  const notes = await getCollection("note", (entry) => isPublished(entry, now));
+  const notes = await getCollection("note", isPublished);
 
   return notes.sort(byPublishedAtDescending);
 }
 
 export async function getPublishedProblems() {
-  const now = new Date();
-  const problems = await getCollection("problem", (entry) =>
-    isPublished(entry, now),
-  );
+  const problems = await getCollection("problem", isPublished);
 
   return problems.sort(byPublishedAtDescending);
 }
