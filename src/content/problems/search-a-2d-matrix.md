@@ -1,14 +1,10 @@
 ---
-
 title: Search a 2D Matrix
-publishedAt: 2026-08-11
+publishedAt: 2026-08-12
 source: "leetcode"
 url: "https://leetcode.com/problems/search-a-2d-matrix/description/"
 tags:
-
-* array
-* binary search
-
+  - binary search
 ---
 
 ## Index Mapping
