@@ -13,14 +13,14 @@ tags:
 
 ```ts
 let maxLength = 0;
-for (let start = 0; i < s.length - 1; start++) {
+for (let start = 0; start < s.length; start++) {
   const set = new Set<string>();
-  for (let end = start + 1; end < s.length; end++) {
+  for (let end = start; end < s.length; end++) {
     if (set.has(s[end])) {
-      maxLength = Math.max(maxLength, end - start);
       break;
     }
     set.add(s[end]);
+    maxLength = Math.max(maxLength, end - start + 1);
   }
 }
 ```

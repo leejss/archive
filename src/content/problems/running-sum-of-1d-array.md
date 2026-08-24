@@ -77,7 +77,7 @@ result[2] = result[1] + nums[2]
 let runningSum = 0;
 const prefixSums = [];
 
-for (const n of prefixSums) {
+for (const n of nums) {
   runningSum += n;
   prefixSums.push(runningSum);
 }
@@ -95,5 +95,5 @@ function runningSum(nums: number[]): number[] {
   }
 
   return prefix;
-
+}
 ```

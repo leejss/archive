@@ -75,7 +75,7 @@ class Solution:
       return list(groups.values())
 ```
 
-## Metal Model
+## Mental Model
 
 - 그룹화를 위해서 대표값을 정한다.
 - 키를 대표값으로 하고 값을 그 키와 비교 시, 같은 대상을 넣는다.
